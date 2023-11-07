@@ -9,7 +9,6 @@ from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 
-from okDeskUtils import okDesk
 from processorMenu import *
 from commonData import *
 from kbs import *
@@ -141,8 +140,7 @@ async def echo(msg: types.Message):
 
    # await bot.sendp.send_p.answer(msg.text)
 
-   if await kbs.testMenuYesNo(menu, msg) == False:
-      await kbs.get_next_kb(menu, msg, bot)
+   await kbs.get_next_kb(menu, msg, bot)
    
    # menu.writeMsg(msg)
    # await msg.answer(msg.text)

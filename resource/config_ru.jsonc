@@ -58,22 +58,6 @@
 				}
 			]
 		},
-		// начало работы вариант1
-		{
-			"id":"StartFirstPure",
-			"title":"answer2",
-			"typeBot":"base",
-			"menu":[
-				{
-					"name":"Начать",
-					"next":"Start"
-				},
-				{
-					"name":"Сменить ассистента",
-					"next":"Registry"
-				}
-			]
-		},
 		// начало работы
 		{
 			"id":"Start",
@@ -94,56 +78,11 @@
 				}
 			]
 		},
-		{
-			"id":"StartPure",
-			"title":"answer2",
-			"typeBot":"base",
-			"menu":[
-				{
-					"name":"Номер плоттера",
-					"next":"menuRequestDeviceId"
-				},
-				{
-					"name":"Фотография QR кода плоттера",
-					"next":"SelectPlotterByQRMenu"
-				},
-				{
-					"name":"Код торговой точки",
-					"next":"menuEditPointId"
-				}
-			]
-		},
-		// меню запроса номера оборудования
-		{
-			"id":"menuRequestDeviceId",
-			"title":"answer202",
-			// "video":"device_number.mp4",
-			"photo":"photo_3.png",
-			// "url":"https://yandex.com/",
-			"menu":[
-				{
-					"name":"Вернуться в начальное меню",
-					"next":"StartFirst"
-				}
-			]
-		},
 		// меню выбора компании торговой точки (предложено выбрать)
 		{
 			"id":"menuEditPointId",
 			"title":"answer204",
 			"photo":"photo_2.png",
-			"menu":[
-				{
-					"name":"Вернуться в начальное меню",
-					"next":"StartFirst"
-				}
-			]
-		},
-		// меню выбора компании торговой точки (предложено выбрать)
-		{
-			"id":"SelectPlotterByQRMenu",
-			"title":"answer203",
-			"photo":"photo_4.png",
 			"menu":[
 				{
 					"name":"Вернуться в начальное меню",
@@ -177,48 +116,6 @@
 				}
 			]
 		},
-		// меню чат бота для клиентов МВМ и Мегафон (антифрод)
-		{
-			"id":"menuPlaceIdclientAntiFrodMain",
-			"title":"answer3",
-			"menu":[
-				{
-					"name":"Да",
-					"place":"0",
-					"next":"menuClientAntiFrod"
-				},
-				{
-					"name":"Нет",
-					"place":"2",
-					"next":"menuRequestDeviceId"
-				},
-				{
-					"name":"Вернуться в начальное меню",
-					"next":"StartFirst"
-				}
-			]
-		},
-		// меню чат бота для клиентов МВМ и Мегафон (антифрод)
-		{
-			"id":"menuPlaceIdclientIntegrationMain",
-			"title":"answer3",
-			"menu":[
-				{
-					"name":"Да",
-					"place":"0",
-					"next":"menuClientIntegration"
-				},
-				{
-					"name":"Нет",
-					"place":"2",
-					"next":"menuRequestDeviceId"
-				},
-				{
-					"name":"Вернуться в начальное меню",
-					"next":"StartFirst"
-				}
-			]
-		},
 		// меню чат бота для плохих клиентов
 		{
 			"id":"menuPlaceIdBad",
@@ -233,27 +130,6 @@
 		// еонец выбор меню запроса вхависимости от типа клинета
 		////////////////////////////////////////////////////////////////////////
 		// меню запроса  и подтверждения места расположения (для Точки обслуживания)
-		{
-			"id":"menuShopPlaceId",
-			"title":"answer3",
-			"menu":[
-				{
-					"name":"Да",
-					"place":"0",
-					// "next":"menuPartnerWithoutIntegration"
-					"next":"menuPlaceIdclient"
-				},
-				{
-					"name":"Нет",
-					"place":"2",
-					"next":"menuEditPointId"
-				},
-				{
-					"name":"Вернуться в начальное меню",
-					"next":"StartFirst"
-				}
-			]
-		},
 		// меню чат бота для сотрудников
 		{
 			"id":"menuPlaceIdemployer",
@@ -300,232 +176,6 @@
 				}
 			]
 		},
-		// меню чат бота для МВМ и Мегафон (антифрод)
-		{
-			"id":"menuClientAntiFrod",
-			"title":"answer301",
-			"menu":[
-				{
-					"name":"Создать новую заявку",
-					"next":"menuCreateRequest"
-				},
-				{
-					"name":"Редактировать существующую заявку",
-					"next":"menuEditRequests"
-				},
-				{
-					"name":"Мой магазин",
-					"place":"0",
-					"next":"menuShop"
-				},
-				{
-					"name":"Запрос на гарантийный рез",
-					"place":"2",
-					"next":"menuRequestGaranty"
-				},
-				{
-					"name":"Вернуться в начальное меню",
-					"next":"StartFirst"
-				}
-			]
-		},
-		// меню чат бота для МТС и Билайн (интеграция)
-		{
-			"id":"menuClientIntegration",
-			"title":"answer301",
-			"menu":[
-				{
-					"name":"Создать новую заявку",
-					"next":"menuCreateRequest"
-				},
-				{
-					"name":"Редактировать существующую заявку",
-					"next":"menuEditRequests"
-				},
-				{
-					"name":"Мой магазин",
-					"place":"0",
-					"next":"menuShop"
-				},
-				{
-					"name":"Рез по QR коду",
-					"place":"2",
-					"next":"menuRequestQR"
-				},
-				{
-					"name":"Вернуться в начальное меню",
-					"next":"StartFirst"
-				}
-			]
-		},
-		// меню магазина
-		{
-			"id":"menuShop",
-			"title":"answer4",
-			"menu":[
-				{
-					"name":"Запросить обучение",
-					"id":"requestTraining",
-					"next":"StartFirst"
-				},
-				{
-					"name":"Сотрудник AJ",
-					"next":"StartFirst"
-				},
-				{
-					"name":"База знаний",
-					"id":"requestDataBase",
-					"next":"StartFirst"
-				},
-				{
-					"name":"Вернуться в начальное меню",
-					"next":"StartFirst"
-				}
-			]
-		},
-		// меню о проблемк
-		{
-			"id":"menuProblemDo",
-			"title":"Опишите проблему",
-			"menu":[
-				{
-					"name":"Завершено",
-					"next":"StartFirst"
-				},
-				{
-					"name":"Вернуться в начальное меню",
-					"next":"StartFirst"
-				}
-			]
-		},
-		// создать новую заявку
-		{
-			"id":"menuCreateRequest",
-			"title":"answer4",
-			"menu":[
-				{
-					"name":"Обратиться в поддержку",
-					"next":"menuCreateRequestSupport"
-				},
-				{
-					"name":"Добавить лекало",
-					"place":"0",
-					"next":"menuAddLekalo"
-				},
-				{
-					"name":"Запросить расходники",
-					"place":"2",
-					"next":"menuGetSupplies"
-				},
-				{
-					"name":"Подтвердить доставку",
-					"next":"menuConfirmDelivery"
-				},
-				{
-					"name":"Вернуться в начальное меню",
-					"next":"StartFirst"
-				}
-			]
-		},
-		// меню база данных
-		{
-			"id":"menuDBKnown",
-			"title":"answer14",
-			"menu":[
-				{
-					"name":"Вернуться в начальное меню",
-					"next":"StartFirst"
-				}
-			]
-		},
-		// меню Обратиться в поддержку
-		{
-			"id":"menuCreateRequestSupport",
-			"title":"answer5",
-			"menu":[
-				{
-					"name":"Вернуться в начальное меню",
-					"next":"StartFirst"
-				}
-			]
-		},
-		// меню запросить расходники
-		{
-			"id":"menuGetSupplies",
-			"title":"answer11",
-			"menu":[
-				{
-					"name":"Вернуться в начальное меню",
-					"next":"StartFirst"
-				}
-			]
-		},
-		// меню подтвердить доставку
-		{
-			"id":"menuConfirmDelivery",
-			"title":"answer24",
-			"menu":[
-				{
-					"name":"Вернуться в начальное меню",
-					"next":"StartFirst"
-				}
-			]
-		},
-		// меню подтвердить доставку (соответсвует акту?)
-		{
-			"id":"menuCorrespondsToAct",
-			"title":"answer25",
-			"menu":[
-				{
-					"name":"Да",
-					"place":"0"
-					// "next":"menuCorrespondsToActYes"
-				},
-				{
-					"name":"Нет",
-					"place":"2"
-					// "next":"menuCorrespondsToActNo"
-				},
-				{
-					"name":"Вернуться в начальное меню",
-					"next":"StartFirst"
-				}
-			]
-		},
-		// меню запрос на гарантийный рез
-		{
-			"id":"menuRequestGaranty",
-			"photo":"image2.png",
-			"title":"answer15",
-			"menu":[
-				{
-					"name":"Вернуться в начальное меню",
-					"next":"StartFirst"
-				}
-			]
-		},
-		// меню запрос на рез по QR
-		{
-			"id":"menuRequestQR",
-			"title":"answer20",
-			"menu":[
-				{
-					"name":"Вернуться в начальное меню",
-					"next":"StartFirst"
-				}
-			]
-		},
-		// меню редактировать существующую заявку (последние 5, даже закрытые)
-		{
-			"id":"menuEditRequests",
-			"title":"редактировать существующую заявку",
-			"menu":[
-				{
-					"name":"Вернуться в начальное меню",
-					"next":"StartFirst"
-				}
-			]
-		},
 		// меню завершения обращения
 		{
 			"id":"menuFinalizeRequest",
@@ -545,38 +195,6 @@
 				{
 					"name":"Завершить обращение",
 					"next":"menuGradeEmployer"
-				}
-			]
-		},
-		// меню оценки сотрудника
-		{
-			"id":"menuGradeEmployer",
-			"title":"answer7",
-			"msg":"answer8",
-			"menu":[
-				{
-					"name":"Не оценивать",
-					"msg":"answer8",
-					"next":"StartFirst"
-				},
-				{
-					"name":"Обращение не завершено",
-					"next":"menuContinueRequest"
-				}
-				// {
-				// 	"name":"Вернуться в начальное меню",
-				// 	"next":"StartFirstPure"
-				// }
-			]
-		},
-		// меню добавить лекала
-		{
-			"id":"menuAddLekalo",
-			"title":"answer9",
-			"menu":[
-				{
-					"name":"Вернуться в начальное меню",
-					"next":"StartFirst"
 				}
 			]
 		}

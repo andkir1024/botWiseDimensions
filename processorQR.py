@@ -6,7 +6,6 @@ from PIL import Image
 from fuzzywuzzy import fuzz
 from pyzbar import pyzbar
 
-from commonData import decodeQRMode
 
 def prepareImagheForTextDecode(img, alpha, beta, scale, clahe, contrast):
     if scale == True:
@@ -216,23 +215,6 @@ def decodeImage(nameImage, modeS=-1):
     rusKey = ''
     rusKeyApp0 = ''
     engKey = ''
-    # mtc
-    if mode == decodeQRMode.MTC:
-        rusKey = 'РусскаяТелефоннаяк'
-        engKey = 'ArmorJack'
-    # вымпелком
-    if mode == decodeQRMode.Vimpel:
-        rusKey = 'Вымпелком услуга аппаратная пленка'
-    # mvideo
-    if mode == decodeQRMode.MVideo:
-        rusKey = '_ МВМ накл плёнки'
-        rusKeyApp0 = '_ МВМ ИНСИТЕХ'
-        # rusKeyApp0 = 'МВМ услуги изготовлению наклейке пленки'
-    if mode == decodeQRMode.MegaFon:
-        rusKey = 'Мегафон'
-        engKey = 'ArmorJack'
-    if mode == decodeQRMode.Paper:
-        rusKey = 'Изготовление+наклейка'
 
     timeStart = time.time()
     img = Image.open(nameImage)
@@ -248,25 +230,12 @@ def decodeImage(nameImage, modeS=-1):
         "model/sr.prototxt",
         "model/sr.caffemodel",
     )
-    # imgZ2 = cv2.rotate(imgZ2, cv2.ROTATE_90_CLOCKWISE)
-    # imgZ2 = cv2.rotate(imgZ2, cv2.ROTATE_90_COUNTERCLOCKWISE)
-
-    # grayExt = cv2.threshold(grayExt, 0, 255,cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]
-    # grayExt = cv2.medianBlur(grayExt, 3)
     decoded_objects = qrcode_detector.detectAndDecode(imgZ2)
 
-    # result = qrcode_detector.detectAndDecode(imgZ2)
-    # res, points = detector.detectAndDecode(imgZ2)
-    # res = detector.detectAndDecode(imgZ2)
-
     messageQR = 'не декодирован';
-    # decoded_objects1 = decode(img)
-    # lenObject = len(decoded_objects1)
     lenObject = len(decoded_objects[0])
     if lenObject == 0:
         grayExt = cv2.cvtColor(imgZ2, cv2.COLOR_BGR2GRAY)
-        # grayExt = cv2.threshold(grayExt, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]
-        # clahe = cv2.createCLAHE(clipLimit=1.2, tileGridSize=(8, 8))
         clahe = cv2.createCLAHE(clipLimit=1.2, tileGridSize=(8, 8))
         equalized = clahe.apply(grayExt)
         decoded_objects = qrcode_detector.detectAndDecode(equalized)
@@ -275,46 +244,7 @@ def decodeImage(nameImage, modeS=-1):
     # --------------------------------------------------------------------------
     # если lenObject == 0 значит QR код не найден и возможно  это некассовый чек
     if lenObject == 0:
-        barcodes = pyzbar.decode(imgZ2)
-        if len(barcodes) != 0:
-            # gray = prepareImagheForTextDecode(imgZ2, 1.2, 0, False, False, False)
-            # grayUpd = prepareImagheForTextDecode(imgZ2, 1.2, 0, True, True, True)
-            grayUpd = prepareImagheForTextDecode(imgZ2, -1.1, 80, True, True, True)
-            # gray = prepareImagheForTextDecode(imgZ2, 1.8, 10, first, first, first)
-            # cv2.imwrite("F:/photos/checksPhones0/zz.png", gray)
-            # cv2.imwrite("zzUpd.png", grayUpd)
-
-            # textRus = pytesseract.image_to_string(gray, lang="rus")
-            textRusUpd = pytesseract.image_to_string(grayUpd, lang="rus", config='--psm 6')
-            # ocr_result = pytesseract.image_to_string(gray, lang='eng', config='--psm 10 --oem 3 -c tessedit_char_whitelist=0123456789')
-            # ocr_result = pytesseract.image_to_string(gray, lang='eng', config="-c tessedit_char_whitelist=0123456789")
-            # strokeRus = textRus.split("\n")
-            # checkInfo = createQRcodeFromPhone(strokeRus)
-
-            strokeRusUpd = textRusUpd.split("\n")
-            checkInfo = createQRcodeFromPhone(strokeRusUpd, barcodes[0][0])
-
-            # text_file = open("Output.txt", "w")
-            # text_file.write(textRusUpd)
-            # text_file.close()
-
-            # videoCheck = 50
-            # videoCheck = testText(".видео", strokeRus, videoCheck)
-            maxWordCheck = 50
-            # if videoCheck > 70:
-            maxWordCheck = testText("Изгот.+наклейка", strokeRusUpd, maxWordCheck)
-
-            if checkInfo == "":
-               checkInfo = messageQR
-            result.append(checkInfo)
-            result.append(f"text {maxWordCheck}")
-            print(result[0])
-            print(result[1])
-            return result
-
         first = True
-        # gray = prepareImagheForTextDecode(imgZ2, 1.8, 10, False,False,False)
-        # gray = prepareImagheForTextDecode(imgZ2, 1.8, 10, True,True,True)
         checkInfo = ""
         for i in range(2):
             gray = prepareImagheForTextDecode(imgZ2, 1.8, 10, first, first, first)
@@ -348,7 +278,6 @@ def decodeImage(nameImage, modeS=-1):
         return result
 
     if lenObject != 0:
-        # qrcode = decoded_objects1[0].data.decode("utf-8")
         qrcode = decoded_objects[0][0]
         if lenObject == 2:
             qrcode0 = decoded_objects[0][0]
@@ -410,6 +339,4 @@ if __name__ == "__main__":
     nameImg = sys.argv[1]
     extractText = sys.argv[2]
     decodeImage(nameImg, extractText)
-    # decodeImage('ok.jpg', -2)
-    # decodeImage('ok1.jpg', 0)
 

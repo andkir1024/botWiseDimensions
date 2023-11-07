@@ -1,7 +1,6 @@
 import html
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 from managerQR import managerQR
-from okDeskUtils import okDesk
 from processorMenu import *
 from aiogram.types import InputFile
 
@@ -44,8 +43,6 @@ class kbs:
         return  None
 
     async def get_next_kb(menu, msg: types.Message, bot) -> ReplyKeyboardMarkup:
-        # userCurrent = userDB(True)
-        # userInfo, isNew = userCurrent.getUserInfo(msg)
         userInfo, isNew = kbs.getMainUserInfo(msg)
         
         current_menu = userInfo.current_menu.lower()
@@ -64,12 +61,6 @@ class kbs:
             menuReply, title, selMenu = menu.getMenu(msgNext, msg, userInfo)
 
             if menuReply is not None:
-                # titleTmp = menu.getAssisitans('base', 'answer1', userInfo.assistant)
-                # await msg.answer(titleTmp)
-                # userInfo.current_menu = msgNext
-                # userInfo.save()
-                # await msg.answer(title, reply_markup=menuReply)
-
                 userInfo.current_menu = msgNext
                 userInfo.save()
                 await kbs.gotoMenu(msg, menu, 'StartFirst', userInfo)
@@ -161,9 +152,6 @@ class kbs:
         return
 
     async def get_kb_by_idmenu(menu, msg: types.Message, msgCmd) -> ReplyKeyboardMarkup:
-        # userCurrent = userDB(True)
-        # userInfo, isNew = userCurrent.getUserInfo(msg)
-        
         userInfo, isNew = kbs.getMainUserInfo(msg)
         menuReply, title, selMenu = menu.getMenu(msgCmd, msg, userInfo)
 
@@ -175,8 +163,6 @@ class kbs:
             await msg.answer(f"ОШИБКА: меню {msgCmd} не найдено")
 
     async def setInfoMode(msg: types.Message):
-        # userCurrent = userDB(True)
-        # userInfo, isNew = userCurrent.getUserInfo(msg)
         userInfo, isNew = kbs.getMainUserInfo(msg)
         if isNew == False:
             pieces = msg.text.split()
@@ -190,8 +176,6 @@ class kbs:
         return
 
     async def setParam(msg: types.Message):
-        # userCurrent = userDB(True)
-        # userInfo, isNew = userCurrent.getUserInfo(msg)
         userInfo, isNew = kbs.getMainUserInfo(msg)
         if isNew == False:
             pieces = msg.text.split()
@@ -214,30 +198,6 @@ class kbs:
         userCurrent = userDB(True)
         userInfo, isNew = userCurrent.getUserInfo(msg)
         return userInfo, isNew
-    
-
-    async def doEquipmentByInvetoryId(menu, current_menu, msg: types.Message, userInfo, InvetoryId):
-        res = okDesk.findPlaceEquipmentByInvetoryId(InvetoryId)
-        if res is None:
-            await msg.answer("Оборудование не найдено. Повторите!")
-            return
-        userInfo.okDeskInfo =  'hardNum=' + InvetoryId
-        userInfo.save()
-        
-        msgReplay = res['name'] + '\n' + res['address']
-        userInfo, isNew = kbs.getMainUserInfo(msg)
-        await msg.answer(msgReplay)
-        if userInfo.userType == 'employer':
-            await kbs.get_kb_by_idmenu(menu, msg, 'menuPlaceIdemployerMain')
-        elif userInfo.userType == 'client':
-            await kbs.get_kb_by_idmenu(menu, msg, 'menuPlaceIdclientMain')
-        elif userInfo.userType == 'clientAntiFrod':
-            await kbs.get_kb_by_idmenu(menu, msg, 'menuPlaceIdclientAntiFrodMain')
-        elif userInfo.userType == 'clientIntegration':
-            await kbs.get_kb_by_idmenu(menu, msg, 'menuPlaceIdclientIntegrationMain')
-        else:
-            await kbs.get_kb_by_idmenu(menu, msg, 'menuPlaceIdBad')
-        return
 
     # отработка введенных данных
     async def getUserData(menu, current_menu, msg: types.Message, userInfo):
@@ -269,67 +229,29 @@ class kbs:
 
         # ввод торговой точки
         if current_menu == "menuEditPointId".lower():
-            # res = okDesk.findEquipmentByInvetoryId(msg)
-            res = okDesk.findPlaceEquipmentByShopId(msg.text)
-            if res is None:
-                await msg.answer("Точка не найдена. Повторите!")
-                return
-            userInfo.okDeskInfo = 'shopId=' + msg.text
-            userInfo.save()
+            # res = okDesk.findPlaceEquipmentByShopId(msg.text)
+            # if res is None:
+            #     await msg.answer("Точка не найдена. Повторите!")
+            #     return
+            # userInfo.okDeskInfo = 'shopId=' + msg.text
+            # userInfo.save()
             
-            msgReplay = res['name'] + '\n' + res['address']
-            await msg.answer(msgReplay)
-            await kbs.get_kb_by_idmenu(menu, msg, 'menuShopPlaceId')
+            # msgReplay = res['name'] + '\n' + res['address']
+            # await msg.answer(msgReplay)
+            # await kbs.get_kb_by_idmenu(menu, msg, 'menuShopPlaceId')
             return
 
         # проблема с поддержкой
         if current_menu == "menuProblemDo".lower():
-            msgReply = menu.getAssisitans("base", "answer32", userInfo.assistant)
-            await msg.answer(msgReply)
-            await kbs.gotoMenu(msg, menu, 'StartFirst', userInfo)
+            # msgReply = menu.getAssisitans("base", "answer32", userInfo.assistant)
+            # await msg.answer(msgReply)
+            # await kbs.gotoMenu(msg, menu, 'StartFirst', userInfo)
             return
         # ожидание комментарев для сотрудников
         if current_menu == "menuWaitComment".lower():
-            msgReply = menu.getAssisitans("base", "answer6", userInfo.assistant, "12345678")
-            await msg.answer(msgReply)
-            await kbs.gotoMenu(msg, menu, 'menuContinueRequest', userInfo, "Сотрудник Иван Иванович взял заявку в работу")
-            return
-        # ---------------------------------------------------------------------------------
-        # создание завки
-        # 1 Обратиться в поддержку
-        if current_menu == "menuCreateRequestSupport".lower():
-            userInfo.okDeskInfo = msg.text+'\n'
-            userInfo.save()
-            msgReply = menu.getAssisitans("base", "answer6", userInfo.assistant, "12345678")
-            await msg.answer(msgReply)
-            # test
-            # await msg.answer("Сотрудник Иван Иванович взял заявку в работу")
-            # await kbs.gotoMenu(msg, menu, 'menuContinueRequest', userInfo)
-            # await kbs.gotoMenu(msg, menu, 'menuFinalizeRequest', userInfo)
-            await kbs.gotoMenu(msg, menu, 'menuContinueRequest', userInfo, "Сотрудник Иван Иванович взял заявку в работу")
-
-            # msgReply = menu.getAssisitans("base", "answer7", userInfo.assistant)
+            # msgReply = menu.getAssisitans("base", "answer6", userInfo.assistant, "12345678")
             # await msg.answer(msgReply)
-
-            return
-        # 2 запросить расходники
-        if current_menu == "menuGetSupplies".lower():
-            userInfo.okDeskInfo = msg.text+'\n'
-            userInfo.save()
-            msgReply = menu.getAssisitans("base", "answer12", userInfo.assistant)
-            await msg.answer(msgReply)
-            await kbs.gotoMenu(msg, menu, 'StartFirst', userInfo)
-            
-            return
-        # 3 подтвердить доставку
-        if current_menu == "menuConfirmDelivery".lower():
-            msgReply = menu.getAssisitans("base", "answer24", userInfo.assistant)
-            await msg.answer(msgReply)
-            return
-        # 4 редактирование заявки
-        if current_menu == "menuEditRequests".lower():
-            # msgReply = menu.getAssisitans("base", "answer24", userInfo.assistant)
-            # await msg.answer(msgReply)
+            # await kbs.gotoMenu(msg, menu, 'menuContinueRequest', userInfo, "Сотрудник Иван Иванович взял заявку в работу")
             return
 
         await msg.answer("Непонятно")
@@ -349,16 +271,6 @@ class kbs:
                 await msg.answer("Не QR код. Повторите ввод")
             else:
                 await kbs.doEquipmentByInvetoryId(menu, current_menu, msg, userInfo, InvetoryId)
-            return True
-        # передача фотографий в режиме (рез по QR коду)
-        if current_menu == "menuRequestQR".lower():
-            msgReply = menu.getAssisitans("base", "answer23", userInfo.assistant)
-            await kbs.gotoMenu(msg, menu, 'StartFirstPure', userInfo, msgReply)
-            return True
-        # передача фотографий в режиме (запрос на гарантию)
-        if current_menu == "menuRequestGaranty".lower():
-            msgReply = menu.getAssisitans("base", "answer16", userInfo.assistant)
-            await kbs.gotoMenu(msg, menu, 'StartFirstPure', userInfo, msgReply)
             return True
         # передача фотографий в режиме (добавить лекало)
         if current_menu == "menuAddLekalo".lower():
@@ -381,35 +293,12 @@ class kbs:
             return True
 
         return False
-    # проверка на выбор пункта меню в зависимости от места в обработке
-    async def testMenuYesNo(menu, msg: types.Message):
-        userInfo, isNew = kbs.getMainUserInfo(msg)
-        current_menu = userInfo.current_menu.lower()
-        # подтверждение доставки
-        if current_menu == "menuCorrespondsToAct".lower():
-            if msg.text.lower() == "да":
-                msgReply = menu.getAssisitans("base", "answer26", userInfo.assistant)
-                await msg.answer(msgReply)
-                await kbs.gotoMenu(msg, menu, 'StartFirst', userInfo)
-                return True
-            if msg.text.lower() == "нет":
-                msgReply = menu.getAssisitans("base", "answer27", userInfo.assistant)
-                await msg.answer(msgReply)
-                await kbs.gotoMenu(msg, menu, 'StartFirst', userInfo)
-                return True
-
-        return False
     # создание меню с списком заявок
     async def createRequestList(menu, current_menu, msg: types.Message, userInfo, msgNext):
-        if msgNext.lower()=='menuEditRequests'.lower():
-            requsts = okDesk.getListReqwests(userInfo.okDeskUserId)
-            return requsts
+        # if msgNext.lower()=='menuEditRequests'.lower():
+        #     requsts = okDesk.getListReqwests(userInfo.okDeskUserId)
+        #     return requsts
         return None
-    # создание заявки
-    async def createRequest(menu, current_menu, msg: types.Message, userInfo, msgNext):
-        if msgNext.lower()=='menuCreateRequest'.lower():
-            return True
-        return False
     # переход на меню по имени
     async def gotoMenu(msg: types.Message, menu, menuName, userInfo, titleExt = None):
         msgNext = menuName

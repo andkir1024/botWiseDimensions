@@ -15,22 +15,10 @@ class processorMenu:
         with open("." + mainConst.DIR_RESOURCE + "config_ru.jsonc", 'r', encoding='utf-8') as f: #открыли файл с данными
             self.parsed_object = parser.load(f)
 
-        with open("." + mainConst.DIR_RESOURCE + "config_employer_ru.jsonc", 'r', encoding='utf-8') as f: #открыли файл с данными
-            self.parsed_employer = parser.load(f)
-
         with open("." + mainConst.DIR_RESOURCE + "answer_ru.jsonc", 'r', encoding='utf-8') as f: #открыли файл с данными
             self.parsed_answer = parser.load(f)
             
-        # self.user = userDB(True)
-        # user.getUserInfo(1000)
         return
-    # async def doMenu(self, message):
-    #     users = userDB(True)
-    #     user = users.getUserInfo(message.chat.id)
-    #     await message.reply(str(message.chat.id))
-    #     await self.createMenu(1000, message)
-        
-    #     return
     
     async def createMenu(self, menuId, message):
         button_hi = KeyboardButton('Привет! 👋')
@@ -77,8 +65,6 @@ class processorMenu:
         return msg
     
     def getMenuReal(self, msg: types.Message, userInfo):
-        if userInfo.userType == 'employer' :
-            return self.parsed_employer['menus']
         return self.parsed_object['menus']
     def getMenu(self, msgCmd, msg: types.Message, userInfo):
         try:

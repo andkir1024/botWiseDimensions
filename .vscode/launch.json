@@ -19,22 +19,6 @@
             "program": "testSpacy.py",
             "console": "integratedTerminal",
             "justMyCode": true
-        },
-        {
-            "name": "QR",
-            "type": "python",
-            "request": "launch",
-            "program": "testQR.py",
-            "console": "integratedTerminal",
-            "justMyCode": true
-        },
-        {
-            "name": "test.py",
-            "type": "python",
-            "request": "launch",
-            "program": "test.py",
-            "console": "integratedTerminal",
-            "justMyCode": true
         }
     ]
 }
