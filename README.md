@@ -14,23 +14,6 @@ git config --global user.name "andkir1024"
 sudo apt-get install libzbar0
 sudo apt-get install tesseract-ocr-rus -y
 
-комманды чат бота
+установка моделей
+python -m spacy download ru_core_news_sm
 
-start - Нажмите для запуска чат бота
-help - Нажмите для получения помощи
-reg - Нажмите для выбора ассистента
-
-test - тестирование не нажимайте
-
-/test 0 - Тестировиние OKDesk
-
-/test 1 - Тестировиние QR
-
-/info 0 - режимы информирования о QR опрецияях (выводится полная информация) 
-
-/set param value
-
-/set userType employer
-/set userType client
-/set userType clientAntiFrod
-/set userType clientIntegration
