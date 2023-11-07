@@ -1,0 +1,54 @@
+{
+	"allTests":[
+		{
+			"typeTest":"qrTests",
+			"tests":[
+				{
+					"id":"test Mts",
+					"dir":"mts",
+					"param":"0",
+					"data":[
+						{
+							"name":"ok.jpg",
+							"qr":"11",
+							"text":80
+						},
+						{
+							"name":"ok1.jpg",
+							"qr":"11",
+							"text":88
+						}
+					]
+				},
+				{
+					"id":"test Megafon",
+					"dir":"megafon",
+					"param":"3",
+					"data":[
+						{
+							"name":"ok.jpg",
+							"qr":"11",
+							"text":80
+						},
+						{
+							"name":"ok1.jpg",
+							"qr":"11",
+							"text":88
+						}
+					]
+				},
+				{
+					"id":"test PlotterQR",
+					"dir":"plottersQR",
+					"param":"-1",
+					"data":[
+						{
+							"name":"qrPlotter.jpg",
+							"qr":"11"
+						}
+					]
+				}
+			]
+		}
+	]
+}

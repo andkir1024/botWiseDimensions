@@ -1,0 +1,391 @@
+{
+
+// комментарием является любая строка которая содержит // - эта строка удаляется 
+// "place" 0-начало строки, 1- продолжение, 2 - завершение (-1 или нет одна строка)
+// "next" указывает на меню "id" куда происходит переход при нажатии на эту кнопку
+// "next" должен быть реальным иначе зависание в последней ветке
+// "type" тип заявки (передается сверху вниз) если нет берется из верхнего уровня (по умолчанию incident) 
+// "role" тип заявки (передается сверху вниз) если нет берется из верхнего уровня (по умолчанию incident) 
+// "kb" тип клавиатуры (inline, reply)
+// "msg" сообщение от бота
+// меню для сотрудников
+
+	"menus":[
+		// читать номер телефона 
+		{
+			"id":"menuPhone",
+			"title":"Для начала работы нам нужно зарегистрироваться",
+			"typeBot":"base",
+			"menu":[
+				{
+					"name":"Зарегистрироваться",
+					"next":"getPhoneNumber"
+				}
+			]
+		},
+		// зарегистрироваться
+		{
+			"id":"Registry",
+			"title":"Выберете ассистента\n1. Армор Джекович - Мужчина средних лет, предпочитает официальный стиль речи, придерживается делового этикета.\n2. Джек - Молодой парень, предпочитает разговорный стиль речи, использует сленг.\n3. Армора - Энергичная девушка, предпочитает публицистический стиль речи, эмоциональна.",
+			"typeBot":"base",
+			"menu":[
+				{
+					"name":"Армор Джекович",
+					"next":"StartFirst"
+				},
+				{
+					"name":"Джек",
+					"next":"StartFirst"
+				},
+				{
+					"name":"Армора",
+					"next":"StartFirst"
+				}
+			]
+		},
+		// начало работы вариант1
+		{
+			"id":"StartFirst",
+			"title":"answer1",
+			"typeBot":"base",
+			"menu":[
+				{
+					"name":"Начать",
+					"next":"Start"
+				},
+				{
+					"name":"Сменить ассистента",
+					"next":"Registry"
+				}
+			]
+		},
+		// начало работы вариант1
+		{
+			"id":"StartFirstPure",
+			"title":"answer2",
+			"typeBot":"base",
+			"menu":[
+				{
+					"name":"Начать",
+					"next":"Start"
+				},
+				{
+					"name":"Сменить ассистента",
+					"next":"Registry"
+				}
+			]
+		},
+		// начало работы
+		{
+			"id":"StartReguest",
+			"title":"answer2",
+			"typeBot":"base",
+			"menu":[
+				{
+					"name":"Номер плоттера",
+					"next":"menuRequestDeviceId"
+				},
+				{
+					"name":"Фотография QR кода плоттера",
+					"next":"SelectPlotterByQRMenu"
+				},
+				{
+					"name":"Код торговой точки",
+					"next":"menuEditPointId"
+				}
+			]
+		},			
+		{
+			"id":"StartPure",
+			"title":"answer2",
+			"typeBot":"base",
+			"menu":[
+				{
+					"name":"Номер плоттера",
+					"next":"menuRequestDeviceId"
+				},
+				{
+					"name":"Фотография QR кода плоттера",
+					"next":"SelectPlotterByQRMenu"
+				},
+				{
+					"name":"Код торговой точки",
+					"next":"menuEditPointId"
+								}
+			]
+		},
+		// меню запроса номера оборудования
+		{
+			"id":"menuRequestDeviceId",
+			"title":"answer202",
+			// "video":"device_number.mp4",
+			"photo":"photo_3.png",
+			// "url":"https://yandex.com/",
+			"menu":[
+				{
+					"name":"Вернуться в начальное меню",
+					"next":"StartFirst"
+				}
+			]
+		},
+		// меню выбора компании торговой точки (предложено выбрать)
+		{
+			"id":"menuEditPointId",
+			"title":"answer204",
+			"photo":"photo_2.png",
+			"menu":[
+				{
+					"name":"Вернуться в начальное меню",
+					"next":"StartFirst"
+				}
+			]
+		},
+		// меню выбора компании торговой точки (предложено выбрать)
+		{
+			"id":"SelectPlotterByQRMenu",
+			"title":"answer203",
+			"photo":"photo_4.png",
+			"menu":[
+				{
+					"name":"Вернуться в начальное меню",
+					"next":"StartFirst"
+				}
+			]
+		},
+		// меню запроса  и подтверждения места расположения (для Точки обслуживания)
+		{
+			"id":"menuShopPlaceId",
+			"title":"answer3",
+			"menu":[
+				{
+					"name":"Да",
+					"place":"0",
+					// "next":"menuPlaceIdclient"
+					"next":"menuEmployer"
+				},
+				{
+					"name":"Нет",
+					"place":"2",
+					"next":"StartReguest"
+				},
+				{
+					"name":"Вернуться в начальное меню",
+					"next":"StartFirst"
+				}
+			]
+		},
+		// начальное меню чат бота для сотрудников
+		{
+			"id":"Start",
+			"title":"answer4",
+			"menu":[
+				{
+					"name":"Создать заявку",
+					"next":"StartReguest"
+				},
+				{
+					"name":"База знаний",
+					"next":"menuDBKnown"
+				},
+				{
+					"name":"Сообщить о проблеме",
+					"next":"menuProblem"
+				},
+				{
+					"name":"Вернуться в начальное меню",
+					"next":"StartFirstPure"
+				}
+			]
+		},
+		// меню чат бота для сотрудников
+		{
+			"id":"menuProblem",
+			"title":"answer31",
+			"menu":[
+				{
+					"name":"Проблема с поддержкой",
+					"next":"menuProblemDo"
+				},
+				{
+					"name":"Проблема с логистикой",
+					"place":"0",
+					"next":"menuProblemDo"
+				},
+				{
+					"name":"Проблема со складом",
+					"place":"2",
+					"next":"menuProblemDo"
+				},
+				{
+					"name":"Сообщить об ошибке ПО",
+					"next":"menuProblemDo"
+				},
+				{
+					"name":"Вернуться в начальное меню",
+					"next":"StartFirst"
+				}
+			]
+		},
+		// меню чат бота для сотрудников
+		{
+			"id":"menuPlaceIdemployerMain",
+			"title":"answer3",
+			"menu":[
+				{
+					"name":"Да",
+					"place":"0",
+					"next":"menuEmployer"
+				},
+				{
+					"name":"Нет",
+					"place":"2",
+					"next":"StartReguest"
+				},
+				{
+					"name":"Вернуться в начальное меню",
+					"next":"StartFirst"
+				}
+			]
+		},
+		// меню чат бота для сотрудников
+		{
+			"id":"menuEmployer",
+			"title":"answer301",
+			"menu":[
+				{
+					"name":"Добавить/Поправить лекало",
+					"id":"addLekalo",
+					"next":"StartFirst"
+				},
+				{
+					"name":"Временный доступ к точке",
+					"id":"tempLekalo",
+					"next":"StartFirst"
+				},
+				{
+					"name":"Смена типа реза",
+					"id":"changeCut",
+					"next":"StartFirst"
+				},
+				{
+					"name":"Закрытие торговой точки",
+					"id":"closePoint",
+					"next":"StartFirst"
+				},
+				{
+					"name":"Открытие торговой точки",
+					"id":"openPoint",
+					"next":"StartFirst"
+				},
+				{
+					"name":"Вернуться в начальное меню",
+					"next":"StartFirst"
+				}
+			]
+		},
+		// меню о проблемк
+		{
+			"id":"menuProblemDo",
+			"title":"answer30",
+			"menu":[
+				// {
+				// 	"name":"Завершено",
+				// 	"next":"StartFirst"
+				// },
+				{
+					"name":"Вернуться в начальное меню",
+					"next":"StartFirst"
+				}
+			]
+		},
+		{
+			"id":"menuProblemDoA",
+			"title":"answer28",
+			"menu":[
+				{
+					"name":"Завершено",
+					"next":"StartFirst"
+				},
+				{
+					"name":"Вернуться в начальное меню",
+					"next":"StartFirst"
+				}
+			]
+		},
+		{
+			"id":"menuProblemDoB",
+			"title":"answer29",
+			"menu":[
+				{
+					"name":"Завершено",
+					"next":"StartFirst"
+				},
+				{
+					"name":"Вернуться в начальное меню",
+					"next":"StartFirst"
+				}
+			]
+		},
+		// меню ожидания комментариев
+		{
+			"id":"menuWaitComment",
+			"title":"answer29",
+			"menu":[
+				{
+					"name":"Вернуться в начальное меню",
+					"next":"StartFirst"
+				}
+			]
+		},
+		// меню продолжение обращения
+		{
+			"id":"menuContinueRequest",
+			"title":"answer7",
+			"menu":[
+				{
+					"name":"Завершить обращение",
+					"next":"menuGradeEmployer"
+				}
+			]
+		},
+		// меню оценки сотрудника
+		{
+			"id":"menuGradeEmployer",
+			"title":"answer7",
+			"msg":"answer8",
+			"menu":[
+				{
+					"name":"Не оценивать",
+					"msg":"answer8",
+					"next":"StartFirst"
+				},
+				{
+					"name":"Обращение не завершено",
+					"next":"menuContinueRequest"
+				}
+			]
+		},
+		// меню база данных
+		{
+			"id":"menuDBKnown",
+			"title":"answer14",
+			"menu":[
+				{
+					"name":"Вернуться в начальное меню",
+					"next":"StartFirst"
+				}
+			]
+		},
+		// меню Обратиться в поддержку
+		{
+			"id":"menuCreateRequestSupport",
+			"title":"answer5",
+			"menu":[
+				{
+					"name":"Завершить обращение",
+					"next":"StartFirst"
+				}
+			]
+		}
+	]
+}
