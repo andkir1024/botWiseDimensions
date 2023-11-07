@@ -84,33 +84,37 @@ class kbs:
                         await kbs.gotoMenu(msg, menu, 'menuSelectUser', userInfo)
                         return
 
+                # заврешение собеседования
                 if next_menu['next'].lower() == 'StartFirst'.lower():
                     msgReply = menu.getAssisitans("base", 'answer3', userInfo.assistant)
                     await msg.answer(msgReply)
                     await kbs.gotoMenu(msg, menu, 'StartFirst', userInfo)
                     return
 
+                # переход в режим общего собеседованичя
+                if next_menu['next'].lower() == 'setCommon'.lower():
+                    msgReply = menu.getAssisitans("base", 'answer4', userInfo.assistant)
+                    await msg.answer(msgReply)
+                    return
 
-                # создание списка заявок (если в этом режиме)
-                RequestList = await kbs.createRequestList(menu, current_menu, msg, userInfo, msgNext)
-                if RequestList is not None:
-                    for request in RequestList:
-                        kb = KeyboardButton(request)
-                        menuReply.add(kb)
-                    pass
+                # переход в режим технического собеседованичя
+                if next_menu['next'].lower() == 'setTech'.lower():
+                    msgReply = menu.getAssisitans("base", 'answer5', userInfo.assistant)
+                    await msg.answer(msgReply)
+                    return
 
                 # создание заявки (если в этом режиме)
-                Request = await kbs.createRequest(menu, current_menu, msg, userInfo, msgNext)
+                # Request = await kbs.createRequest(menu, current_menu, msg, userInfo, msgNext)
                 
-                await kbs.showAppParameters(selMenu, msg, bot)
+                # await kbs.showAppParameters(selMenu, msg, bot)
 
-                if menuReply is not None:
-                    userInfo.current_menu = msgNext
-                    userInfo.save()
-                    await msg.answer(title, reply_markup=menuReply)
-                else:
-                    if title is not None:
-                        await msg.answer('ОШИБКА: '+title)
+                # if menuReply is not None:
+                #     userInfo.current_menu = msgNext
+                #     userInfo.save()
+                #     await msg.answer(title, reply_markup=menuReply)
+                # else:
+                #     if title is not None:
+                #         await msg.answer('ОШИБКА: '+title)
             return
         # отрабатываем ввод данных
         else:

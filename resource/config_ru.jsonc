@@ -66,12 +66,12 @@
 				{
 					"name":"Общие вопросы",
 					"place":"0",
-					"next":"menuSelectUser"
+					"next":"setCommon"
 				},
 				{
 					"name":"Текхнические вопросы",
 					"place":"2",
-					"next":"menuSelectUser"
+					"next":"setTech"
 				},
 				{
 					"name":"Вернуться в начальное меню",
