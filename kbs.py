@@ -218,10 +218,6 @@ class kbs:
                 await kbs.get_kb_by_idmenu(menu, msg, 'menuPlaceIdemployerMain')
             elif userInfo.userType == 'client':
                 await kbs.get_kb_by_idmenu(menu, msg, 'menuPlaceIdclientMain')
-            elif userInfo.userType == 'clientAntiFrod':
-                await kbs.get_kb_by_idmenu(menu, msg, 'menuPlaceIdclientAntiFrodMain')
-            elif userInfo.userType == 'clientIntegration':
-                await kbs.get_kb_by_idmenu(menu, msg, 'menuPlaceIdclientIntegrationMain')
             else:
                 await kbs.get_kb_by_idmenu(menu, msg, 'menuPlaceIdBad')
             return

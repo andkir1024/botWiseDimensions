@@ -32,17 +32,13 @@ async def cmd_start(msg: types.Message) -> None:
    userCurrent = userDB(True)
    userInfo, isNew = userCurrent.getUserInfo(msg)
 
-   if userInfo.phone is None:
-      kb, title, current_menu = kbs.get_kb_phone(menu, msg)
-   else:
-      kb, title, current_menu = kbs.get_kb(menu, msg, userInfo, isNew)
+   # if userInfo.phone is None:
+   #    kb, title, current_menu = kbs.get_kb_phone(menu, msg)
+   # else:
+   #    kb, title, current_menu = kbs.get_kb(menu, msg, userInfo, isNew)
+   kb, title, current_menu = kbs.get_kb(menu, msg, userInfo, isNew)
    
    if kb is not None:
-      status = okDesk.getUserByPhone(userInfo)
-      if status is not None:
-         userInfo.okDeskUserId = status
-      else:
-         userInfo.okDeskUserId = -1
       userInfo.current_menu = current_menu
       userInfo.save()
       await msg.answer(title, reply_markup=kb)

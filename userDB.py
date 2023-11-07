@@ -13,7 +13,6 @@ class user:
     assistant : userAssistant
     current_menu : str
     okDeskInfo : str
-    okDeskUserId : int
     data : str
     userType : str
     counter : int
@@ -32,7 +31,6 @@ class user:
         self.data = ""
         self.infoMode = infoShow.undifined
         self.userType = userType.client
-        self.okDeskUserId = -1
         self.counter = -1
 
     def __init__(self, message : types.Message):
@@ -49,7 +47,6 @@ class user:
         self.data = ""
         self.infoMode = infoShow.undifined
         self.userType = userType.client
-        self.okDeskUserId = -1
         self.counter = -1
         
     def save(self, clearCounter = True):
