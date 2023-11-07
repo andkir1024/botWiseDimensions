@@ -76,35 +76,20 @@ class kbs:
                     
                 menuReply, title, selMenu = menu.getMenu(msgNext, msg, userInfo)
 
-                # режим сотрудников
-                if current_menu == 'menuEmployer'.lower():
-                    if 'id' in next_menu:
-                        id = next_menu['id'].lower()
-                        if id == 'addLekalo'.lower() or id == 'tempLekalo'.lower() or id == 'changeCut'.lower():
-                            msgReply = menu.getAssisitans("base", 'answer30', userInfo.assistant)
-                            # await msg.answer(msgReply)
-                            await kbs.gotoMenu(msg, menu, 'menuWaitComment', userInfo, msgReply)
-                            
-                        if id == 'closePoint'.lower():
-                            msgReply = menu.getAssisitans("base", 'answer29', userInfo.assistant)
-                            await kbs.gotoMenu(msg, menu, 'menuWaitComment', userInfo, msgReply)
-                            # await msg.answer(msgReply)
-                        if id == 'openPoint'.lower():
-                            msgReply = menu.getAssisitans("base", 'answer28', userInfo.assistant)
-                            await kbs.gotoMenu(msg, menu, 'menuWaitComment', userInfo, msgReply)
-                            # await msg.answer(msgReply)
+                # режим выбор соискателя
+                if current_menu == 'StartFirst'.lower():
+                    if 'info' in next_menu:
+                        info = 'РЕЗЮМЕ: ' + next_menu['info']
+                        await msg.answer(info)
+                        await kbs.gotoMenu(msg, menu, 'menuSelectUser', userInfo)
                         return
 
-                # режим мой магазин
-                if current_menu == 'menuShop'.lower():
-                    if 'id' in next_menu:
-                        id = next_menu['id'].lower()
-                        if id == 'requestTraining'.lower():
-                            msgReply = menu.getAssisitans("base", 'answer13', userInfo.assistant)
-                            await msg.answer(msgReply)
-                        if id == 'requestDataBase'.lower():
-                            msgReply = menu.getAssisitans("base", 'answer14', userInfo.assistant)
-                            await msg.answer(msgReply)
+                if next_menu['next'].lower() == 'StartFirst'.lower():
+                    msgReply = menu.getAssisitans("base", 'answer3', userInfo.assistant)
+                    await msg.answer(msgReply)
+                    await kbs.gotoMenu(msg, menu, 'StartFirst', userInfo)
+                    return
+
 
                 # создание списка заявок (если в этом режиме)
                 RequestList = await kbs.createRequestList(menu, current_menu, msg, userInfo, msgNext)
