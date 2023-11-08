@@ -126,10 +126,6 @@ async def get_address(message: types.Message, state: FSMContext):
  
 @dp.message_handler()
 async def echo(msg: types.Message):
-   # res = requests.post('https://httpbin.org/post', data={'st3': 'jim hopper'})
-   # print(res.text)
-   # okDesk.findEquipmentByInvetoryId("5956")
-
    # userCurrent = userDB(True)
    # userInfo, isNew = userCurrent.getUserInfo(msg)
    # await kbs.get_next_kb(menu, msg, userInfo, isNew)
@@ -137,9 +133,6 @@ async def echo(msg: types.Message):
    # await bot.sendp.send_p.answer(msg.text)
 
    await kbs.get_next_kb(menu, msg, bot)
-   
-   # menu.writeMsg(msg)
-   # await msg.answer(msg.text)
  
 if __name__ == '__main__':
    executor.start_polling(dp, skip_updates=True)

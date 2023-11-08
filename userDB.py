@@ -12,10 +12,10 @@ class user:
     right : userRight
     assistant : userAssistant
     current_menu : str
-    okDeskInfo : str
     data : str
     userType : str
     counter : int
+    urlUser : str
     # информация выводимая ботом для конкретного пользователя
     infoMode : int
     def __init__(self):
@@ -27,11 +27,11 @@ class user:
         self.right = userRight.admin
         self.assistant = userAssistant.assistant0
         self.current_menu = ""
-        self.okDeskInfo = ""
         self.data = ""
         self.infoMode = infoShow.undifined
         self.userType = userType.client
         self.counter = -1
+        self.urlUser = ""
 
     def __init__(self, message : types.Message):
         from_user = message.from_user
@@ -43,11 +43,11 @@ class user:
         self.right = userRight.user
         self.assistant = userAssistant.assistant0
         self.current_menu = ""
-        self.okDeskInfo = ""
         self.data = ""
         self.infoMode = infoShow.undifined
         self.userType = userType.client
         self.counter = -1
+        self.urlUser = ""
         
     def save(self, clearCounter = True):
         if clearCounter:

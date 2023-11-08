@@ -47,12 +47,12 @@
 			"menu":[
 				{
 					"name":"Андрей",
-					"info":"https://spb.hh.ru/applicant/resumes/view?resume=af263aa3ff03948a760039ed1f4c7a6c464945",
+					"info":"https://spb.hh.ru/applicant/resumes/view?resume=af263aa3ff03948a760039ed1f4c7a6c464945/",
 					"next":"menuSelectUser"
 				},
 				{
 					"name":"Неизветстный",
-					"info":"https://spb.hh.ru/applicant/resumes/view?resume=af263aa3ff03948a760039ed1f4c7a6c464945",
+					"info":"https://spb.hh.ru/applicant/resumes/view?resume=af263aa3ff03948a760039ed1f4c7a6c464945/",
 					"next":"menuSelectUser"
 				}
 			]

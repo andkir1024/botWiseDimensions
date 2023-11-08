@@ -1,5 +1,6 @@
 import html
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
+from doHHresume import HHresume
 from managerQR import managerQR
 from processorMenu import *
 from aiogram.types import InputFile
@@ -46,25 +47,6 @@ class kbs:
         userInfo, isNew = kbs.getMainUserInfo(msg)
         
         current_menu = userInfo.current_menu.lower()
-        # выбор ассистента
-        if current_menu == 'Registry'.lower():
-            lenName = len(msg.text)
-            if lenName == 14:
-                userInfo.assistant = userAssistant.assistant0
-            elif lenName == 4:
-                userInfo.assistant = userAssistant.assistant1
-            else:
-                userInfo.assistant = userAssistant.assistant2
-                
-            # await msg.answer('2222')
-            msgNext = 'start'
-            menuReply, title, selMenu = menu.getMenu(msgNext, msg, userInfo)
-
-            if menuReply is not None:
-                userInfo.current_menu = msgNext
-                userInfo.save()
-                await kbs.gotoMenu(msg, menu, 'StartFirst', userInfo)
-            return
         # переход к следующему меню
         next_menu = kbs.findNextMenu(menu, msg.text, current_menu, msg, userInfo)
         if next_menu is not None:
@@ -79,7 +61,12 @@ class kbs:
                 # режим выбор соискателя
                 if current_menu == 'StartFirst'.lower():
                     if 'info' in next_menu:
-                        info = 'РЕЗЮМЕ: ' + next_menu['info']
+                        urlUser = next_menu['info']
+                        userInfo.urlUser = urlUser
+                        userInfo.save()
+                        HHresume.proceessResume(urlUser)
+                        
+                        info = 'РЕЗЮМЕ: ' + urlUser
                         await msg.answer(info)
                         await kbs.gotoMenu(msg, menu, 'menuSelectUser', userInfo)
                         return
@@ -191,24 +178,9 @@ class kbs:
     # отработка введенных данных
     async def getUserData(menu, current_menu, msg: types.Message, userInfo):
         # ввод номера плоттера
-        if current_menu == "menuRequestDeviceId".lower():
-            # res = okDesk.findEquipmentByInvetoryId(msg)
-            res = okDesk.findPlaceEquipmentByInvetoryId(msg.text)
-            if res is None:
-                await msg.answer("Оборудование не найдено. Повторите!")
-                return
-            userInfo.okDeskInfo = 'hardNum=' + msg.text
-            userInfo.save()
-            
-            msgReplay = res['name'] + '\n' + res['address']
-            userInfo, isNew = kbs.getMainUserInfo(msg)
-            await msg.answer(msgReplay)
-            if userInfo.userType == 'employer':
-                await kbs.get_kb_by_idmenu(menu, msg, 'menuPlaceIdemployerMain')
-            elif userInfo.userType == 'client':
-                await kbs.get_kb_by_idmenu(menu, msg, 'menuPlaceIdclientMain')
-            else:
-                await kbs.get_kb_by_idmenu(menu, msg, 'menuPlaceIdBad')
+        if current_menu == "StartFirst".lower():
+            return
+        if current_menu == "menuSelectUser".lower():
             return
                 
 
