@@ -1,7 +1,110 @@
+# import requests
+# from bs4 import BeautifulSoup 
+from os import name
 import requests
+import fake_useragent
+from bs4 import BeautifulSoup
+import time
+import json
+
 
 class HHresume:
+    def get_links(text):
+        ua =fake_useragent.UserAgent()
+        res = requests.get(
+            url=f"https://hh.ru/search/resume?relocation=living_or_relocation&gender=unknown&text={text}&isDefaultArea=true&exp_period=all_time&logic=normal&pos=full_text&fromSearchLine=false&search_period=0",
+            headers={"user-agent":ua.random}
+        )
+        if res.status_code != 200:
+            return
+        soup = BeautifulSoup(res.content, "lxml")
+        try:
+            page_count = int(soup.find("div",attrs={"class":"pager"}).find_all("span",recursive=False)[-1].find("a").find("span").text)
+        except:
+            return
+        for page in range(page_count):
+        # for page in range(3):
+            try:
+                res = requests.get(
+                    url=f"https://hh.ru/search/resume?relocation=living_or_relocation&gender=unknown&text={text}&isDefaultArea=true&exp_period=all_time&logic=normal&pos=full_text&fromSearchLine=false&search_period=0&page={page}",
+                    headers={"user-agent":ua.random}
+                )
+                if res.status_code == 200:
+                    soup = BeautifulSoup(res.content, "lxml")
+                    for a in soup.find_all("a",attrs={"class":"resume-search-item__name"}):
+                        yield f'https://hh.ru{a.attrs["href"].split("?")[0]}'
+            except Exception as e:
+                print(f"{e}")
+            time.sleep(1)
+        print(page_count)
+
+    def get_resume(link):
+        ua =fake_useragent.UserAgent()
+        data = requests.get(
+            url=link,
+            headers={"user-agent":ua.random}
+        )
+        if data.status_code != 200:
+            return
+        soup = BeautifulSoup(data.content, "lxml")
+        try:
+            name = soup.find(attrs={"class":"resume-block__title-text"}).text
+        except:
+            name = ""
+        try:
+            salary = soup.find(attrs={"class":"resume-block__title-text_salary"}).text.replace("\u2009","").replace("\xa0"," ")
+        except:
+            salary = ""
+        try:
+            tags = [tag.text for tag in soup.find(attrs={"class":"bloko-tag-list"}).find_all("span",attrs={"class":"bloko-tag__section_text"})]
+        except:
+            tags = []
+        resume = {
+            "name":name,
+            "salary":salary,
+            "tags":tags,
+        }
+        return resume
+
+    def download_data(tag, filename):
+        data = []
+        for a in HHresume.get_links(tag):
+            data.append(HHresume.get_resume(a))
+            time.sleep(1)
+            with open(filename,"w",encoding="utf-8")as f:
+                json.dump(data,f,indent = 4, ensure_ascii=False)
+
+    def read_data(filename):
+        with open(filename, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        return data
+
+    def get_skills(data, freq):
+        skills = {}
+        dataCount = 0
+        for d in data:
+            if not d:
+                continue
+            dataCount += 1
+            for tag in d.get("tags", []):
+                skills[tag] = skills.get(tag, 0) + 1
+        
+        skills = {k: v / dataCount for k, v in skills.items() if v / dataCount >= freq}
+        skills_sorted = sorted(skills, key=lambda x: skills[x], reverse=True)
+        return {skill: skills[skill] for skill in skills_sorted}
+        
     def proceessResume(uplResume):
+        for a in HHresume.get_links("python"):
+            print(a)
+        '''
+        data = []
+        for a in HHresume.get_links("python"):
+            res = HHresume.get_resume(a)
+            data.append(res)
+            time.sleep(1)
+        return
+        '''
+        '''
         st_accept = "text/html" # говорим веб-серверу, 
         # что хотим получить html
         # имитируем подключение через браузер Mozilla на macOS
@@ -17,8 +120,16 @@ class HHresume:
         # считываем текст HTML-документа
         src = req.text
 
-        uplResume = "https://habr.com/ru/companies/selectel/articles/754674/"
+        # uplResume = "https://habr.com/ru/companies/selectel/articles/754674/"
         req1 = requests.get(uplResume, headers)
         src1 = req1.text
         
+        # response = requests.get("https://zenrows.com") 
+        response = requests.get(uplResume) 
+        soup = BeautifulSoup(response.content, 'html.parser') 
+        src2 = soup.title.string
+
+        with open("spb.hh.ru") as fp: 
+            soup = BeautifulSoup(fp, "html.parser") 
         return
+        '''
