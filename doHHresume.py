@@ -12,7 +12,12 @@ class HHresume:
     def get_links(text):
         ua =fake_useragent.UserAgent()
         res = requests.get(
-            url=f"https://hh.ru/search/resume?relocation=living_or_relocation&gender=unknown&text={text}&isDefaultArea=true&exp_period=all_time&logic=normal&pos=full_text&fromSearchLine=false&search_period=0",
+            # url=f"https://hh.ru/search/resume?text=Python&area=1&isDefaultArea=true&exp_period=all_time&logic=normal&pos=full_text&fromSearchLine=false&hhtmFrom=vacancy_search_list",
+            
+            # url = f"https://spb.hh.ru/resume/f385aa2e0001f248590039ed1f366659697166?query=python&hhtmFrom=resume_search_result",
+            url = f"https://spb.hh.ru/applicant/resumes/view?resume=af263aa3ff03948a760039ed1f4c7a6c464945",
+            
+            # url=f"https://hh.ru/search/resume?relocation=living_or_relocation&gender=unknown&text={text}&isDefaultArea=true&exp_period=all_time&logic=normal&pos=full_text&fromSearchLine=false&search_period=0",
             headers={"user-agent":ua.random}
         )
         if res.status_code != 200:
@@ -22,6 +27,7 @@ class HHresume:
             page_count = int(soup.find("div",attrs={"class":"pager"}).find_all("span",recursive=False)[-1].find("a").find("span").text)
         except:
             return
+        data = []
         for page in range(page_count):
         # for page in range(3):
             try:
@@ -31,12 +37,17 @@ class HHresume:
                 )
                 if res.status_code == 200:
                     soup = BeautifulSoup(res.content, "lxml")
-                    for a in soup.find_all("a",attrs={"class":"resume-search-item__name"}):
-                        yield f'https://hh.ru{a.attrs["href"].split("?")[0]}'
+                    for a in soup.find_all("a", attrs={"class": "serp-item"}):
+                    # for a in soup.find_all("a", attrs={"class": "serp-item__name"}):
+                    # for a in soup.find_all("a",attrs={"class":"resume-search-item__name"}):
+                        urlUser = f'https://hh.ru{a.attrs["href"].split("?")[0]}'
+                        data.append(urlUser)
+                        # yield f'https://hh.ru{a.attrs["href"].split("?")[0]}'
             except Exception as e:
                 print(f"{e}")
             time.sleep(1)
         print(page_count)
+        return data
 
     def get_resume(link):
         ua =fake_useragent.UserAgent()
@@ -94,6 +105,8 @@ class HHresume:
         return {skill: skills[skill] for skill in skills_sorted}
         
     def proceessResume(uplResume):
+        py = HHresume.get_links("python")
+        return
         for a in HHresume.get_links("python"):
             print(a)
         '''
