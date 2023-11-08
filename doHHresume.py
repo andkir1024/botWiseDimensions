@@ -23,6 +23,18 @@ class HHresume:
         if res.status_code != 200:
             return
         soup = BeautifulSoup(res.content, "lxml")
+        # llNews0 = soup.findAll('div', class_='resume-header-name')
+        # llNews1 = soup.find('span', class_='a11y-fast-nav')
+        llNews0 = soup.findAll('div')
+        # llNews1 = soup.find('div', class ='a11y-fast-nav')
+        llNews1 = soup.find_all("div", class_="resume-header-name")
+        
+        llNews2 = soup.find_all("h2", class_="bloko-header-1")
+            
+        # nnn = llNews1.next_elements
+        
+        # for string in soup.strings:
+            # print(repr(string))
         try:
             page_count = int(soup.find("div",attrs={"class":"pager"}).find_all("span",recursive=False)[-1].find("a").find("span").text)
         except:
