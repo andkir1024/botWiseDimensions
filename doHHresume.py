@@ -31,8 +31,6 @@ class HHresume:
         
         llNews2 = soup.find_all("h2", class_="bloko-header-1")
             
-        # nnn = llNews1.next_elements
-        
         # for string in soup.strings:
             # print(repr(string))
         try:
