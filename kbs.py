@@ -82,6 +82,17 @@ class kbs:
                         
                         await kbs.gotoMenu(msg, menu, 'menuSelectUser', userInfo)
                         return
+                # формирование отчета
+                if next_menu['next'].lower() == 'setReport'.lower():
+                    # msg = text(bold('Я могу ответить на следующие команды:'),'/voice', '/photo', '/group', '/note', '/file, /testpre', sep='\n')
+                    # await msg.reply(msg, parse_mode=ParseMode.MARKDOWN)                    
+                    
+                    # message = "<font color='red'>Это сообщение с красным текстом!</font>"
+                    # await msg.send_message(message)
+
+                    msgReply = HHreport.infoReport(userInfo)
+                    await msg.answer(msgReply)
+                    return
 
                 # заврешение собеседования
                 if next_menu['next'].lower() == 'StartFirst'.lower():

@@ -74,7 +74,13 @@
 					"next":"setTech"
 				},
 				{
+					"name":"Отчет",
+					"place":"0",
+					"next":"setReport"
+				},
+				{
 					"name":"Вернуться в начальное меню",
+					"place":"2",
 					"next":"StartFirst"
 				}
 			]
