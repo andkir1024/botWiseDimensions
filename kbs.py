@@ -231,6 +231,8 @@ class kbs:
             await kbs.doStartReview(menu, urlUser, userInfo, msg)
             return
         if current_menu == "menuSelectUser".lower():
+            userInfo.testedUserAnswers = userInfo.testedUserAnswers + 'a:' + msg.text + '\n'
+            userInfo.save()
             return
                 
 

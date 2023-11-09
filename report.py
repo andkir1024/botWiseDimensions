@@ -8,5 +8,10 @@ class HHreport:
         return msg
 
     def infoReport(userInfo : userDB):
-        msg = "Отчет по собеседованию" + '\n' + userInfo.testedUserName + '\n' + userInfo.testedUserWorks
+        msg = "Отчет по собеседованию" + '\n' + userInfo.testedUserName + '\n' + userInfo.testedUserWorks + '\n'
+        qa = userInfo.testedUserAnswers
+        answers = qa.split("a:")
+        for answer in answers:
+            if answer != "":
+                msg = msg + 'Ответ: ' + answer
         return msg    
