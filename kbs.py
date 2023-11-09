@@ -45,6 +45,27 @@ class kbs:
                         return itemMenu
         return  None
 
+    async def doStartReview(menu, urlUser, userInfo, msg: types.Message):
+        userInfo.urlUser = urlUser
+        user = HHresume.proceessResume(urlUser)
+        if user is None:
+            info = 'Это не резюме'
+            await msg.answer(info)
+            return
+        userInfo.testedUserName = user[0] if not None else "Неизвестный"
+        userInfo.testedUserWorks = user[1] if not None else "Неуказана"
+        userInfo.testedUserAnswers = ""
+        userInfo.save()
+        
+        info = 'РЕЗЮМЕ: ' + urlUser
+        await msg.answer(info)
+        
+        msgUser = HHreport.infoUser(user)
+        await msg.answer(msgUser)
+        
+        await kbs.gotoMenu(msg, menu, 'menuSelectUser', userInfo)
+        return
+    
     async def get_next_kb(menu, msg: types.Message, bot) -> ReplyKeyboardMarkup:
         userInfo, isNew = kbs.getMainUserInfo(msg)
         
@@ -64,23 +85,27 @@ class kbs:
                 if current_menu == 'StartFirst'.lower():
                     if 'info' in next_menu:
                         urlUser = next_menu['info']
-                        userInfo.urlUser = urlUser
-                        user = HHresume.proceessResume(urlUser)
-                        if user is None:
-                            info = 'Это не резюме'
-                            await msg.answer(info)
-                            return
-                        userInfo.testedUserName = user[0] if not None else "Неизвестный"
-                        userInfo.testedUserWorks = user[1] if not None else "Неуказана"
-                        userInfo.save()
+                        await kbs.doStartReview(menu, urlUser, userInfo, msg)
+
+                        # urlUser = next_menu['info']
+                        # userInfo.urlUser = urlUser
+                        # user = HHresume.proceessResume(urlUser)
+                        # if user is None:
+                        #     info = 'Это не резюме'
+                        #     await msg.answer(info)
+                        #     return
+                        # userInfo.testedUserName = user[0] if not None else "Неизвестный"
+                        # userInfo.testedUserWorks = user[1] if not None else "Неуказана"
+                        # userInfo.testedUserAnswers = ""
+                        # userInfo.save()
                         
-                        info = 'РЕЗЮМЕ: ' + urlUser
-                        await msg.answer(info)
+                        # info = 'РЕЗЮМЕ: ' + urlUser
+                        # await msg.answer(info)
                         
-                        msgUser = HHreport.infoUser(user)
-                        await msg.answer(msgUser)
+                        # msgUser = HHreport.infoUser(user)
+                        # await msg.answer(msgUser)
                         
-                        await kbs.gotoMenu(msg, menu, 'menuSelectUser', userInfo)
+                        # await kbs.gotoMenu(msg, menu, 'menuSelectUser', userInfo)
                         return
                 # формирование отчета
                 if next_menu['next'].lower() == 'setReport'.lower():
@@ -202,6 +227,8 @@ class kbs:
     async def getUserData(menu, current_menu, msg: types.Message, userInfo):
         # ввод номера плоттера
         if current_menu == "StartFirst".lower():
+            urlUser = msg.text
+            await kbs.doStartReview(menu, urlUser, userInfo, msg)
             return
         if current_menu == "menuSelectUser".lower():
             return

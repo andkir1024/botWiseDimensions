@@ -20,6 +20,7 @@ class user:
     infoMode : int
     testedUserName : str
     testedUserWorks : str
+    testedUserAnswers : str
     def __init__(self):
         self.id = 1335723885
         self.phone = '89218866929'
@@ -36,6 +37,7 @@ class user:
         self.urlUser = ""
         self.testedUserName = ""
         self.testedUserWorks = ""
+        self.testedUserAnswers = ""
 
     def __init__(self, message : types.Message):
         from_user = message.from_user
@@ -54,6 +56,7 @@ class user:
         self.urlUser = ""
         self.testedUserName = ""
         self.testedUserWorks = ""
+        self.testedUserAnswers = ""
         
     def save(self, clearCounter = True):
         if clearCounter:
