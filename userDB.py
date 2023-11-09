@@ -18,6 +18,8 @@ class user:
     urlUser : str
     # информация выводимая ботом для конкретного пользователя
     infoMode : int
+    testedUserName : str
+    testedUserWorks : str
     def __init__(self):
         self.id = 1335723885
         self.phone = '89218866929'
@@ -32,6 +34,8 @@ class user:
         self.userType = userType.client
         self.counter = -1
         self.urlUser = ""
+        self.testedUserName = ""
+        self.testedUserWorks = ""
 
     def __init__(self, message : types.Message):
         from_user = message.from_user
@@ -48,6 +52,8 @@ class user:
         self.userType = userType.client
         self.counter = -1
         self.urlUser = ""
+        self.testedUserName = ""
+        self.testedUserWorks = ""
         
     def save(self, clearCounter = True):
         if clearCounter:

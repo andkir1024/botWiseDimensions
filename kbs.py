@@ -5,6 +5,8 @@ from managerQR import managerQR
 from processorMenu import *
 from aiogram.types import InputFile
 
+from report import HHreport
+
 class kbs:
     def get_kb_phone(menu, msg: types.Message) -> ReplyKeyboardMarkup:
         kb_clients = ReplyKeyboardMarkup(resize_keyboard=True)
@@ -63,11 +65,21 @@ class kbs:
                     if 'info' in next_menu:
                         urlUser = next_menu['info']
                         userInfo.urlUser = urlUser
+                        user = HHresume.proceessResume(urlUser)
+                        if user is None:
+                            info = 'Это не резюме'
+                            await msg.answer(info)
+                            return
+                        userInfo.testedUserName = user[0] if not None else "Неизвестный"
+                        userInfo.testedUserWorks = user[1] if not None else "Неуказана"
                         userInfo.save()
-                        HHresume.proceessResume(urlUser)
                         
                         info = 'РЕЗЮМЕ: ' + urlUser
                         await msg.answer(info)
+                        
+                        msgUser = HHreport.infoUser(user)
+                        await msg.answer(msgUser)
+                        
                         await kbs.gotoMenu(msg, menu, 'menuSelectUser', userInfo)
                         return
 

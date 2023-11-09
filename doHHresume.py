@@ -9,6 +9,37 @@ import json
 
 
 class HHresume:
+    def get_resume_soap(urlResume):
+        ua =fake_useragent.UserAgent()
+        res = requests.get(
+            # url = f"https://spb.hh.ru/applicant/resumes/view?resume=af263aa3ff03948a760039ed1f4c7a6c464945/",
+            url = urlResume,
+            headers={"user-agent":ua.random}
+        )
+        if res.status_code != 200:
+            return None
+        return res.content
+    def extract_info(soup, heade, clas):
+        info = soup.find_all(heade, class_=clas)
+        if len(info) == 0:
+            return None
+        
+        return info[0].string
+    def get_resume_info(urlResume):
+        resume = HHresume.get_resume_soap(urlResume)
+        if resume is not None:
+            soup = BeautifulSoup(resume, "lxml")
+
+            # llNews0 = soup.findAll('div')
+            # llNews1 = soup.find_all("div", class_="resume-header-name")
+            # llNews2 = soup.find_all("h2", class_="bloko-header-1")
+            llNews2 = soup.find_all("h2", class_="bloko-header-2")
+            llNews3 = soup.find_all("div", class_="resume-block__title-text-wrapper")
+
+            userName = HHresume.extract_info(soup, "h2", "bloko-header-1")
+            userPos = HHresume.extract_info(soup, "h2", "bloko-header-2")
+            return (userName, userPos)
+        return None
     def get_links(text):
         ua =fake_useragent.UserAgent()
         res = requests.get(
@@ -30,7 +61,7 @@ class HHresume:
         llNews1 = soup.find_all("div", class_="resume-header-name")
         
         llNews2 = soup.find_all("h2", class_="bloko-header-1")
-            
+        return
         # for string in soup.strings:
             # print(repr(string))
         try:
@@ -114,11 +145,10 @@ class HHresume:
         skills_sorted = sorted(skills, key=lambda x: skills[x], reverse=True)
         return {skill: skills[skill] for skill in skills_sorted}
         
-    def proceessResume(uplResume):
-        py = HHresume.get_links("python")
-        return
-        for a in HHresume.get_links("python"):
-            print(a)
+    def proceessResume(urlResume):
+        user = HHresume.get_resume_info(urlResume)
+        # py = HHresume.get_links(urlResume)
+        return user
         '''
         data = []
         for a in HHresume.get_links("python"):
