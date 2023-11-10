@@ -18,6 +18,9 @@ class processorMenu:
         with open("." + mainConst.DIR_RESOURCE + "answer_ru.jsonc", 'r', encoding='utf-8') as f: #открыли файл с данными
             self.parsed_answer = parser.load(f)
             
+        with open("." + mainConst.DIR_RESOURCE + "qwest_python.jsonc", 'r', encoding='utf-8') as f: #открыли файл с данными
+            self.parsed_qwest_python = parser.load(f)
+
         return
     
     async def createMenu(self, menuId, message):

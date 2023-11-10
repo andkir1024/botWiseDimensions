@@ -4,6 +4,7 @@ from doHHresume import HHresume
 from managerQR import managerQR
 from processorMenu import *
 from aiogram.types import InputFile
+from question import questionProcessor
 
 from report import HHreport
 
@@ -119,22 +120,11 @@ class kbs:
                 if next_menu['next'].lower() == 'setTech'.lower():
                     userInfo.testedUserMode = 'tech Python'
                     userInfo.save()
+                    msqQuest = questionProcessor.get_quest(menu)
                     msgReply = menu.getAssisitans("base", 'answer5', userInfo.assistant)
                     await msg.answer(msgReply)
                     return
 
-                # создание заявки (если в этом режиме)
-                # Request = await kbs.createRequest(menu, current_menu, msg, userInfo, msgNext)
-                
-                # await kbs.showAppParameters(selMenu, msg, bot)
-
-                # if menuReply is not None:
-                #     userInfo.current_menu = msgNext
-                #     userInfo.save()
-                #     await msg.answer(title, reply_markup=menuReply)
-                # else:
-                #     if title is not None:
-                #         await msg.answer('ОШИБКА: '+title)
             return
         # отрабатываем ввод данных
         else:
@@ -210,43 +200,16 @@ class kbs:
 
     # отработка введенных данных
     async def getUserData(menu, current_menu, msg: types.Message, userInfo):
-        # ввод номера плоттера
+        # ввод url резюме HH
         if current_menu == "StartFirst".lower():
             urlUser = msg.text
             await kbs.doStartReview(menu, urlUser, userInfo, msg)
             return
+        # ввод ответа на вопрос
         if current_menu == "menuSelectUser".lower():
             testedUserMode = userInfo.testedUserMode + 'einf'
             userInfo.testedUserAnswers = userInfo.testedUserAnswers + 'mode:' + testedUserMode + msg.text + '\n'
             userInfo.save()
-            return
-                
-
-        # ввод торговой точки
-        if current_menu == "menuEditPointId".lower():
-            # res = okDesk.findPlaceEquipmentByShopId(msg.text)
-            # if res is None:
-            #     await msg.answer("Точка не найдена. Повторите!")
-            #     return
-            # userInfo.okDeskInfo = 'shopId=' + msg.text
-            # userInfo.save()
-            
-            # msgReplay = res['name'] + '\n' + res['address']
-            # await msg.answer(msgReplay)
-            # await kbs.get_kb_by_idmenu(menu, msg, 'menuShopPlaceId')
-            return
-
-        # проблема с поддержкой
-        if current_menu == "menuProblemDo".lower():
-            # msgReply = menu.getAssisitans("base", "answer32", userInfo.assistant)
-            # await msg.answer(msgReply)
-            # await kbs.gotoMenu(msg, menu, 'StartFirst', userInfo)
-            return
-        # ожидание комментарев для сотрудников
-        if current_menu == "menuWaitComment".lower():
-            # msgReply = menu.getAssisitans("base", "answer6", userInfo.assistant, "12345678")
-            # await msg.answer(msgReply)
-            # await kbs.gotoMenu(msg, menu, 'menuContinueRequest', userInfo, "Сотрудник Иван Иванович взял заявку в работу")
             return
 
         await msg.answer("Непонятно")
@@ -266,25 +229,6 @@ class kbs:
                 await msg.answer("Не QR код. Повторите ввод")
             else:
                 await kbs.doEquipmentByInvetoryId(menu, current_menu, msg, userInfo, InvetoryId)
-            return True
-        # передача фотографий в режиме (добавить лекало)
-        if current_menu == "menuAddLekalo".lower():
-            # if 'msg' in next_menu:
-            # exec(f"userInfo.{counter} = 0")
-            # exec(userInfo.counter = 0)
-            if userInfo.counter < 0:
-                userInfo.counter = 0
-            if userInfo.counter == 0:
-                msgReply = menu.getAssisitans("base", "answer10", userInfo.assistant)
-                userInfo.counter += 1
-                await msg.answer(msgReply)
-                userInfo.save(False)
-                return True
-            if userInfo.counter == 1:
-                userInfo.save()
-                msgReply = menu.getAssisitans("base", "answer6", userInfo.assistant, "12345678")
-                await kbs.gotoMenu(msg, menu, 'menuContinueRequest', userInfo, msgReply)
-                return True
             return True
 
         return False
