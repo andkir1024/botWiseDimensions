@@ -55,6 +55,7 @@ class kbs:
         userInfo.testedUserName = user[0] if not None else "Неизвестный"
         userInfo.testedUserWorks = user[1] if not None else "Неуказана"
         userInfo.testedUserAnswers = ""
+        userInfo.testedUserMode = ""
         userInfo.save()
         
         info = 'РЕЗЮМЕ: ' + urlUser
@@ -86,26 +87,6 @@ class kbs:
                     if 'info' in next_menu:
                         urlUser = next_menu['info']
                         await kbs.doStartReview(menu, urlUser, userInfo, msg)
-
-                        # urlUser = next_menu['info']
-                        # userInfo.urlUser = urlUser
-                        # user = HHresume.proceessResume(urlUser)
-                        # if user is None:
-                        #     info = 'Это не резюме'
-                        #     await msg.answer(info)
-                        #     return
-                        # userInfo.testedUserName = user[0] if not None else "Неизвестный"
-                        # userInfo.testedUserWorks = user[1] if not None else "Неуказана"
-                        # userInfo.testedUserAnswers = ""
-                        # userInfo.save()
-                        
-                        # info = 'РЕЗЮМЕ: ' + urlUser
-                        # await msg.answer(info)
-                        
-                        # msgUser = HHreport.infoUser(user)
-                        # await msg.answer(msgUser)
-                        
-                        # await kbs.gotoMenu(msg, menu, 'menuSelectUser', userInfo)
                         return
                 # формирование отчета
                 if next_menu['next'].lower() == 'setReport'.lower():
@@ -128,12 +109,16 @@ class kbs:
 
                 # переход в режим общего собеседованичя
                 if next_menu['next'].lower() == 'setCommon'.lower():
+                    userInfo.testedUserMode = 'common'
+                    userInfo.save()
                     msgReply = menu.getAssisitans("base", 'answer4', userInfo.assistant)
                     await msg.answer(msgReply)
                     return
 
                 # переход в режим технического собеседованичя
                 if next_menu['next'].lower() == 'setTech'.lower():
+                    userInfo.testedUserMode = 'tech Python'
+                    userInfo.save()
                     msgReply = menu.getAssisitans("base", 'answer5', userInfo.assistant)
                     await msg.answer(msgReply)
                     return
@@ -231,7 +216,8 @@ class kbs:
             await kbs.doStartReview(menu, urlUser, userInfo, msg)
             return
         if current_menu == "menuSelectUser".lower():
-            userInfo.testedUserAnswers = userInfo.testedUserAnswers + 'a:' + msg.text + '\n'
+            testedUserMode = userInfo.testedUserMode + 'einf'
+            userInfo.testedUserAnswers = userInfo.testedUserAnswers + 'mode:' + testedUserMode + msg.text + '\n'
             userInfo.save()
             return
                 
