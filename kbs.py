@@ -1,5 +1,6 @@
 import html
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
+from emoji import emojize
 from doHHresume import HHresume
 from managerQR import managerQR
 from processorMenu import *
@@ -7,6 +8,15 @@ from aiogram.types import InputFile
 from question import questionProcessor
 
 from report import HHreport
+
+
+from aiogram import Bot, types
+from aiogram.utils import executor
+from aiogram.utils.emoji import emojize
+from aiogram.dispatcher import Dispatcher
+from aiogram.types.message import ContentType
+from aiogram.utils.markdown import text, bold, italic, code, pre
+from aiogram.types import ParseMode, InputMediaPhoto, InputMediaVideo, ChatActions
 
 class kbs:
     def get_kb_phone(menu, msg: types.Message) -> ReplyKeyboardMarkup:
@@ -26,14 +36,6 @@ class kbs:
             msgCmd = 'StartFirst'
         menuReply, title, selMenu = menu.getMenu(msgCmd, msg, userInfo)
         return menuReply, title, msgCmd
-            
-        kb_clients = ReplyKeyboardMarkup(resize_keyboard=True)
-        b1 = KeyboardButton('say 1')
-        b2 = KeyboardButton('say 2', request_contact=True)
-        b3 = KeyboardButton('say 3')
-        kb_clients.add(b1).add(b2).add(b3)
-        msgReply = menu.getAssisitans("base", "answer1", 1)
-        return kb_clients, 'Test andy'
 
     def findNextMenu(menu, findMsg, current_menu, msg: types.Message, userInfo):
         # allMenu = menu.parsed_object['menus']
@@ -98,9 +100,15 @@ class kbs:
                     
                     # message = "<font color='red'>Это сообщение с красным текстом!</font>"
                     # await msg.send_message(message)
+                    
+                    # message_text = text(bold('\nЯ просто напомню,'), 'что есть', code('команда'), '/help')
+                    # await msg.reply(message_text, parse_mode=ParseMode.MARKDOWN)
+
+                    # message = "<b>Это сообщение с красным текстом!</b>"
+                    # await msg.answer(message, parse_mode="HTML")
 
                     msgReply = HHreport.infoReport(userInfo, menu)
-                    await msg.answer(msgReply)
+                    await msg.answer(msgReply, parse_mode="HTML")
                     return
 
                 # заврешение собеседования

@@ -149,9 +149,11 @@ class HHresume:
         return {skill: skills[skill] for skill in skills_sorted}
         
     def proceessResume(urlResume):
-        user = HHresume.get_resume_info(urlResume)
+        if urlResume != '':
+            user = HHresume.get_resume_info(urlResume)
+            return user
         # py = HHresume.get_links(urlResume)
-        return user
+        return None
         '''
         data = []
         for a in HHresume.get_links("python"):
