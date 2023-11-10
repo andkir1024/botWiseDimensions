@@ -4,8 +4,10 @@ import userDB
 
 class HHreport:
     def infoUser(userInfo):
-        msg = 'Здравствуйте '+ userInfo[0] if not None else "Неизвестный"
-        msg = msg  + '\nВаши навыки: '+ userInfo[1] if not None else "неуказаны"
+        user= userInfo[0] if userInfo[0] is not None else "Неизвестный"
+        prop= userInfo[1] if userInfo[1] is not None else "неуказаны"
+        msg = 'Здравствуйте '+ user
+        msg = msg  + '\nВаши навыки: '+ prop
         return msg
 
     def infoReport(userInfo : userDB, menu):

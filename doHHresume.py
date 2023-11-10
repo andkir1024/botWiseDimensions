@@ -49,9 +49,9 @@ class HHresume:
             # url=f"https://hh.ru/search/resume?text=Python&area=1&isDefaultArea=true&exp_period=all_time&logic=normal&pos=full_text&fromSearchLine=false&hhtmFrom=vacancy_search_list",
             
             # url = f"https://spb.hh.ru/resume/f385aa2e0001f248590039ed1f366659697166?query=python&hhtmFrom=resume_search_result",
-            url = f"https://spb.hh.ru/applicant/resumes/view?resume=af263aa3ff03948a760039ed1f4c7a6c464945",
+            # url = f"https://spb.hh.ru/applicant/resumes/view?resume=af263aa3ff03948a760039ed1f4c7a6c464945",
             
-            # url=f"https://hh.ru/search/resume?relocation=living_or_relocation&gender=unknown&text={text}&isDefaultArea=true&exp_period=all_time&logic=normal&pos=full_text&fromSearchLine=false&search_period=0",
+            url=f"https://hh.ru/search/resume?relocation=living_or_relocation&gender=unknown&text={text}&isDefaultArea=true&exp_period=all_time&logic=normal&pos=full_text&fromSearchLine=false&search_period=0",
             headers={"user-agent":ua.random}
         )
         if res.status_code != 200:
@@ -64,7 +64,7 @@ class HHresume:
         llNews1 = soup.find_all("div", class_="resume-header-name")
         
         llNews2 = soup.find_all("h2", class_="bloko-header-1")
-        return
+        # return
         # for string in soup.strings:
             # print(repr(string))
         try:
@@ -72,8 +72,8 @@ class HHresume:
         except:
             return
         data = []
-        for page in range(page_count):
-        # for page in range(3):
+        # for page in range(page_count):
+        for page in range(1):
             try:
                 res = requests.get(
                     url=f"https://hh.ru/search/resume?relocation=living_or_relocation&gender=unknown&text={text}&isDefaultArea=true&exp_period=all_time&logic=normal&pos=full_text&fromSearchLine=false&search_period=0&page={page}",
@@ -152,7 +152,7 @@ class HHresume:
         if urlResume != '':
             user = HHresume.get_resume_info(urlResume)
             return user
-        # py = HHresume.get_links(urlResume)
+        py = HHresume.get_links("python")
         return None
         '''
         data = []

@@ -30,8 +30,8 @@ class kbs:
         first = msgCmd[0]
         if first == '/':
             msgCmd = msgCmd[1:]
-        if isNew:
-            msgCmd = 'Registry'
+        # if isNew:
+        #     msgCmd = 'Registry'
         if msgCmd == 'start':
             msgCmd = 'StartFirst'
         menuReply, title, selMenu = menu.getMenu(msgCmd, msg, userInfo)
@@ -55,8 +55,8 @@ class kbs:
             info = 'Это не резюме'
             await msg.answer(info)
             return
-        userInfo.testedUserName = user[0] if not None else "Неизвестный"
-        userInfo.testedUserWorks = user[1] if not None else "Неуказана"
+        userInfo.testedUserName = user[0] if user[0] is not None else "Неизвестный"
+        userInfo.testedUserWorks = user[1] if user[1] is not None else "Неуказана"
         userInfo.testedUserAnswers = ""
         userInfo.testedUserMode = ""
         userInfo.testedUserQuestId = -1
