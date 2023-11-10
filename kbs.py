@@ -57,6 +57,8 @@ class kbs:
         userInfo.testedUserWorks = user[1] if not None else "Неуказана"
         userInfo.testedUserAnswers = ""
         userInfo.testedUserMode = ""
+        userInfo.testedUserQuestId = -1
+        
         userInfo.save()
         
         info = 'РЕЗЮМЕ: ' + urlUser
@@ -97,7 +99,7 @@ class kbs:
                     # message = "<font color='red'>Это сообщение с красным текстом!</font>"
                     # await msg.send_message(message)
 
-                    msgReply = HHreport.infoReport(userInfo)
+                    msgReply = HHreport.infoReport(userInfo, menu)
                     await msg.answer(msgReply)
                     return
 
@@ -118,11 +120,15 @@ class kbs:
 
                 # переход в режим технического собеседованичя
                 if next_menu['next'].lower() == 'setTech'.lower():
-                    userInfo.testedUserMode = 'tech Python'
-                    userInfo.save()
                     msqQuestIndex = questionProcessor.get_quest(menu)
-                    msqQuest = questionProcessor.get_quest_byId(menu, msqQuestIndex)
+                    msqQuest = questionProcessor.get_quest_byId(menu, msqQuestIndex)['qwest']
                     msgReply = menu.getAssisitans("base", 'answer5', userInfo.assistant) + ' ' + msqQuest
+
+                    userInfo.testedUserMode = 'tech Python'
+                    userInfo.testedUserQuestId = msqQuestIndex
+                    userInfo.testedUserAnswers = userInfo.testedUserAnswers + 'mode:q'  + str(msqQuestIndex)
+                    userInfo.save()
+
                     await msg.answer(msgReply)
                     return
 
@@ -208,8 +214,9 @@ class kbs:
             return
         # ввод ответа на вопрос
         if current_menu == "menuSelectUser".lower():
-            testedUserMode = userInfo.testedUserMode + 'einf'
-            userInfo.testedUserAnswers = userInfo.testedUserAnswers + 'mode:' + testedUserMode + msg.text + '\n'
+            # testedUserMode = userInfo.testedUserMode + 'einf'
+            # userInfo.testedUserAnswers = userInfo.testedUserAnswers + 'mode:' + testedUserMode + msg.text + '\n'
+            userInfo.testedUserAnswers = userInfo.testedUserAnswers + 'mode:a'  + msg.text + '\n'
             userInfo.save()
             return
 

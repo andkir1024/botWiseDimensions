@@ -8,5 +8,5 @@ class questionProcessor:
     
     def get_quest_byId(menu, index):
         quest = menu.parsed_qwest_python
-        msg = quest['answers'][index]['qwest']
+        msg = quest['answers'][index]
         return msg
