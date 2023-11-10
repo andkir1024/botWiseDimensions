@@ -120,8 +120,9 @@ class kbs:
                 if next_menu['next'].lower() == 'setTech'.lower():
                     userInfo.testedUserMode = 'tech Python'
                     userInfo.save()
-                    msqQuest = questionProcessor.get_quest(menu)
-                    msgReply = menu.getAssisitans("base", 'answer5', userInfo.assistant)
+                    msqQuestIndex = questionProcessor.get_quest(menu)
+                    msqQuest = questionProcessor.get_quest_byId(menu, msqQuestIndex)
+                    msgReply = menu.getAssisitans("base", 'answer5', userInfo.assistant) + ' ' + msqQuest
                     await msg.answer(msgReply)
                     return
 
