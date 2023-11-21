@@ -64,24 +64,24 @@
 			"title":"answer2",
 			"photo":"photo_2.png",
 			"menu":[
+				// {
+				// 	"name":"Общие вопросы",
+				// 	"place":"0",
+				// 	"next":"setCommon"
+				// },
 				{
-					"name":"Общие вопросы",
+					"name":"Начать собеседование",
 					"place":"0",
-					"next":"setCommon"
-				},
-				{
-					"name":"Технические вопросы",
-					"place":"2",
 					"next":"setTech"
 				},
 				{
 					"name":"Отчет",
-					"place":"0",
+					"place":"2",
 					"next":"setReport"
 				},
 				{
-					"name":"Вернуться в начальное меню",
-					"place":"2",
+					"name":"Завершить собеседование",
+					// "place":"2",
 					"next":"StartFirst"
 				}
 			]

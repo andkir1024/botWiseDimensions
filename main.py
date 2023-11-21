@@ -1,9 +1,3 @@
-# from aiogram import Bot, Dispatcher, executor, types
-# from aiogram.contrib.fsm_storage.memory import MemoryStorage
-# from aiogram.dispatcher.filters.state import StatesGroup, State
-# from aiogram.dispatcher import FSMContext
-# from aiogram.contrib.middlewares.logging import LoggingMiddleware
-
 from aiogram import types
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
@@ -15,6 +9,32 @@ from kbs import *
 from testBot import *
 from managerQR import *
  
+'''
+from langchain.chat_models import GigaChat
+from langchain.prompts.chat import (
+    ChatPromptTemplate,
+    SystemMessagePromptTemplate,
+    AIMessagePromptTemplate,
+    HumanMessagePromptTemplate,
+)
+from langchain.schema import AIMessage, HumanMessage, SystemMessage
+
+# Авторизация в сервисе GigaChat
+chat = GigaChat(credentials="MTI3YzYzN2ItOGIwOC00NDNiLWJmOGItOGM3N2NmNTYxMjZhOjVjYWYxMjljLWJlMjEtNDQ4Yi05M2Q5LTI1N2ZhMmEzMmU2Mw==", verify_ssl_certs=False)
+
+messages = [
+    SystemMessage(
+        content="Ты эмпатичный бот-психолог, который помогает пользователю решить его проблемы."
+    )
+]
+while(True):
+    user_input = input("User: ")
+    messages.append(HumanMessage(content=user_input))
+    res = chat(messages)
+    messages.append(res)
+    print("Bot: ", res.content)
+'''
+
 bot = Bot(token=mainConst.API_TOKEN)
 # storage=MemoryStorage()
 dp = Dispatcher(bot, storage=MemoryStorage())
