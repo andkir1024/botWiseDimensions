@@ -80,8 +80,13 @@
 					"next":"setReport"
 				},
 				{
+					"name":"Следующий вопрос",
+					"place":"0",
+					"next":"setNext"
+				},
+				{
 					"name":"Завершить собеседование",
-					// "place":"2",
+					"place":"2",
 					"next":"StartFirst"
 				}
 			]
