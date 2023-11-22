@@ -8,6 +8,7 @@ from aiogram import Bot, Dispatcher, executor, types
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.types import ReplyKeyboardRemove, ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton
 from userDB import *
+from chatGPT import *
 
 class processorMenu:
     def __init__(self):
@@ -20,8 +21,11 @@ class processorMenu:
             
         with open("." + mainConst.DIR_RESOURCE + "qwest_python.jsonc", 'r', encoding='utf-8') as f: #открыли файл с данными
             self.parsed_qwest_python = parser.load(f)
+        self.gigaChat = gigaChatProcessor()
 
         return
+    def getGigaChat(self):
+        return self.gigaChat
     
     async def createMenu(self, menuId, message):
         button_hi = KeyboardButton('Привет! 👋')

@@ -128,9 +128,13 @@ class kbs:
 
                 # переход в режим технического собеседованичя
                 if next_menu['next'].lower() == 'setTech'.lower():
-                    msqQuestIndex = questionProcessor.get_quest(menu)
-                    msqQuest = questionProcessor.get_quest_byId(menu, msqQuestIndex)['qwest']
-                    msgReply = menu.getAssisitans("base", 'answer5', userInfo.assistant) + ' ' + msqQuest
+                    gigaChat = menu.getGigaChat()
+                    msqQuest =gigaChat.start()
+
+                    # msqQuestIndex = questionProcessor.get_quest(menu)
+                    # msqQuest = questionProcessor.get_quest_byId(menu, msqQuestIndex)['qwest']
+                    # msgReply = menu.getAssisitans("base", 'answer5', userInfo.assistant) + ' ' + msqQuest
+                    msqQuestIndex = 0
 
                     userInfo.testedUserMode = 'tech Python'
                     userInfo.testedUserQuestId = msqQuestIndex
