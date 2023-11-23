@@ -19,13 +19,14 @@ class HHreport:
                 key = answer[0]
                 param = answer[1:]
                 if key == 'q':
-                    index = int(param)
-                    msqQuest = questionProcessor.get_quest_byId(menu, index)['qwest']
-                    msg = msg + '\n<b>Вопрос:</b> ' + msqQuest
+                    # index = int(param)
+                    # msqQuest = questionProcessor.get_quest_byId(menu, index)['qwest']
+                    # msg = msg + '\n<b>Вопрос:</b> ' + msqQuest
+                    msg = msg + '\n<b>Вопрос:</b> ' + param
 
-                    msqAnswer = questionProcessor.get_quest_byId(menu, index)['answer']
-                    msqAnswer = msqAnswer.replace("\\n", "\n")
-                    msg = msg + '\n<b>Правильный ответ:</b> ' + msqAnswer
+                    # msqAnswer = questionProcessor.get_quest_byId(menu, index)['answer']
+                    # msqAnswer = msqAnswer.replace("\\n", "\n")
+                    # msg = msg + '\n<b>Правильный ответ:</b> ' + msqAnswer
                     
                     if indexAnswer < len(answers)-1:
                         answerNext = answers[indexAnswer+1]

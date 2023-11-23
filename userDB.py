@@ -2,6 +2,7 @@ import json
 from commonData import *
 from aiogram import types
 import os.path
+import codecs
 
 class user:
     id : int
@@ -69,7 +70,20 @@ class user:
             self.counter = -1
 
         s = json.dumps(self.__dict__)
+        str16 = str(s)
+        # s16 = str16.decode("utf-8")
+        
+        # utf16_string = string.encode("utf-16")
+        # utf16_string = str16
+        # string = utf16_string.decode("utf-16")
+        
         fileUser = user.getFileName(self.id)
+    
+       
+        # with codecs.open(fileUser, "w", "utf-16") as text_file:
+        #     text_file.write(str(s))
+
+        # with open(fileUser, "w", encoding="utf-16") as text_file:
         with open(fileUser, "w") as text_file:
             text_file.write(str(s))
         return

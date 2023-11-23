@@ -119,26 +119,33 @@ class kbs:
                     return
 
                 # переход в режим общего собеседованичя
-                if next_menu['next'].lower() == 'setCommon'.lower():
-                    userInfo.testedUserMode = 'common'
-                    userInfo.save()
-                    msgReply = menu.getAssisitans("base", 'answer4', userInfo.assistant)
-                    await msg.answer(msgReply)
-                    return
+                # if next_menu['next'].lower() == 'setCommon'.lower():
+                #     userInfo.testedUserMode = 'common'
+                #     userInfo.save()
+                #     msgReply = menu.getAssisitans("base", 'answer4', userInfo.assistant)
+                #     await msg.answer(msgReply)
+                #     return
 
                 # переход в режим технического собеседованичя
                 if next_menu['next'].lower() == 'setTech'.lower():
+                    testedUserWorks = userInfo.testedUserWorks
                     gigaChat = menu.getGigaChat()
-                    msqQuest =gigaChat.start()
+                    keyAdded = gigaChat.testKey(testedUserWorks)
+                    if len(keyAdded)==0:
+                        await msg.answer("Для тестирования нет необходимых навыков")
+                        return
+
+                    msgReply =gigaChat.start(keyAdded)
 
                     # msqQuestIndex = questionProcessor.get_quest(menu)
                     # msqQuest = questionProcessor.get_quest_byId(menu, msqQuestIndex)['qwest']
                     # msgReply = menu.getAssisitans("base", 'answer5', userInfo.assistant) + ' ' + msqQuest
-                    msqQuestIndex = 0
+                    # msqQuestIndex = 0
 
                     userInfo.testedUserMode = 'tech Python'
-                    userInfo.testedUserQuestId = msqQuestIndex
-                    userInfo.testedUserAnswers = userInfo.testedUserAnswers + 'mode:q'  + str(msqQuestIndex)
+                    # userInfo.testedUserQuestId = msqQuestIndex
+                    # userInfo.testedUserAnswers = userInfo.testedUserAnswers + 'mode:q'  + str(msqQuestIndex)
+                    userInfo.testedUserAnswers = userInfo.testedUserAnswers + 'mode:q'  + msgReply
                     userInfo.save()
 
                     await msg.answer(msgReply)
