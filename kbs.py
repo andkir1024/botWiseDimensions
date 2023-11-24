@@ -70,6 +70,7 @@ class kbs:
         await msg.answer(msgUser)
         
         await kbs.gotoMenu(msg, menu, 'menuSelectUser', userInfo)
+        await kbs.doRequest(menu, msg, userInfo)
         return
     
     async def get_next_kb(menu, msg: types.Message, bot) -> ReplyKeyboardMarkup:
@@ -108,7 +109,8 @@ class kbs:
                     # await msg.answer(message, parse_mode="HTML")
 
                     msgReply = HHreport.infoReport(userInfo, menu)
-                    await msg.answer(msgReply, parse_mode="HTML")
+                    await msg.answer(msgReply)
+                    # await msg.answer(msgReply, parse_mode="HTML")
                     return
 
                 # заврешение собеседования
@@ -118,43 +120,39 @@ class kbs:
                     await kbs.gotoMenu(msg, menu, 'StartFirst', userInfo)
                     return
 
-                # переход в режим общего собеседованичя
-                # if next_menu['next'].lower() == 'setCommon'.lower():
-                #     userInfo.testedUserMode = 'common'
-                #     userInfo.save()
-                #     msgReply = menu.getAssisitans("base", 'answer4', userInfo.assistant)
-                #     await msg.answer(msgReply)
-                #     return
-
-                # переход в режим технического собеседованичя
+                # переход в режим собеседованичя
                 if next_menu['next'].lower() == 'setTech'.lower():
-                    testedUserWorks = userInfo.testedUserWorks
-                    gigaChat = menu.getGigaChat()
-                    keyAdded = gigaChat.testKey(testedUserWorks)
-                    if len(keyAdded)==0:
-                        await msg.answer("Для тестирования нет необходимых навыков")
-                        return
-
-                    msgReply =gigaChat.start(keyAdded)
-
-                    # msqQuestIndex = questionProcessor.get_quest(menu)
-                    # msqQuest = questionProcessor.get_quest_byId(menu, msqQuestIndex)['qwest']
-                    # msgReply = menu.getAssisitans("base", 'answer5', userInfo.assistant) + ' ' + msqQuest
-                    # msqQuestIndex = 0
-
-                    userInfo.testedUserMode = 'tech Python'
-                    # userInfo.testedUserQuestId = msqQuestIndex
-                    # userInfo.testedUserAnswers = userInfo.testedUserAnswers + 'mode:q'  + str(msqQuestIndex)
-                    userInfo.testedUserAnswers = userInfo.testedUserAnswers + 'mode:q'  + msgReply
-                    userInfo.save()
-
-                    await msg.answer(msgReply)
+                    await kbs.doRequest(menu, msg, userInfo)
                     return
 
             return
         # отрабатываем ввод данных
         else:
             await kbs.getUserData(menu, current_menu, msg, userInfo)
+
+    async def doRequest(menu, msg: types.Message, userInfo):
+        testedUserWorks = userInfo.testedUserWorks
+        gigaChat = menu.getGigaChat()
+        keyAdded = gigaChat.testKey(testedUserWorks)
+        if len(keyAdded)==0:
+            await msg.answer("Для тестирования нет необходимых навыков")
+            return
+
+        msgReply,indexKey =gigaChat.start(keyAdded)
+
+        # msqQuestIndex = questionProcessor.get_quest(menu)
+        # msqQuest = questionProcessor.get_quest_byId(menu, msqQuestIndex)['qwest']
+        # msgReply = menu.getAssisitans("base", 'answer5', userInfo.assistant) + ' ' + msqQuest
+        # msqQuestIndex = 0
+
+        userInfo.testedUserMode = 'tech Python'
+        # userInfo.testedUserQuestId = indexKey
+        # userInfo.testedUserAnswers = userInfo.testedUserAnswers + 'mode:q'  + str(msqQuestIndex)
+        userInfo.testedUserAnswers = userInfo.testedUserAnswers + 'mode:q'  + msgReply
+        userInfo.save()
+
+        await msg.answer(msgReply)
+        return
         
     async def showAppParameters(selMenu, msg: types.Message, bot):
         if selMenu is not None:
@@ -237,6 +235,7 @@ class kbs:
             # userInfo.testedUserAnswers = userInfo.testedUserAnswers + 'mode:' + testedUserMode + msg.text + '\n'
             userInfo.testedUserAnswers = userInfo.testedUserAnswers + 'mode:a'  + msg.text + '\n'
             userInfo.save()
+            await kbs.doRequest(menu, msg, userInfo)
             return
 
         await msg.answer("Непонятно")

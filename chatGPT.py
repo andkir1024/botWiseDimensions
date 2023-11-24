@@ -49,8 +49,10 @@ class gigaChatProcessor:
         lenKey = len(keyAdded)
         indexKey = random.randint(0,lenKey-1)
         roleReq = MessagesRole.ASSISTANT
+        roleReq = MessagesRole.USER
         prefReq =""
-        self.counter = 1
+        # roleReq = MessagesRole.SYSTEM
+        # self.counter = 1
         if self.counter == 0:
             roleReq = MessagesRole.SYSTEM
             msgReq = "Ты рекрутер. начальный  вопрос кандидату"
@@ -59,13 +61,17 @@ class gigaChatProcessor:
         else:
             msg = keyAdded[indexKey]
             prefReq = f"[{msg[0]}] "
-            # msgReq = f"Напише мне вопрос по {msg[0]} кандидату на должность ведущего программиста"
-            msgReq = f"Ты рекрутер. Напише мне задачу на {msg[0]} для кандидата на должность ведущего программиста"
+            # msgReq = f"Ты рекрутер. Напише мне вопрос по {msg[0]} кандидату на должность ведущего программиста"
+            # msgReq = f"Ты рекрутер. Напише мне задачу на {msg[0]} для кандидата на должность ведущего программиста"
+            msgReq = f"Ты рекрутер. Напише мне задачу на {msg[0]} для кандидата на должность программиста"
+            # Ты рекрутер.
+            # Придумай мне задачу на Python для кандидата на должность программиста
+            # Придумай мне вопрос по знанию языка Python 
         messages = [
             SystemMessage(
                 # role = MessagesRole.USER,
                 role = roleReq,
-                # temperature = 2,
+                temperature = 2,
                 content=msgReq
             )
         ]
@@ -76,7 +82,20 @@ class gigaChatProcessor:
         indexStart = outStr.find(":")
         if indexStart > 0:
             outStr = outStr[indexStart+3:]
-        return prefReq + res.content
+        return prefReq + outStr, indexKey
+
+    # def testRequest(self,msqTest):
+    #     prefReq =""
+    #     messages = [
+    #         SystemMessage(
+    #             role = MessagesRole.USER,
+    #             # temperature = 2,
+    #             content=msgReq
+    #         )
+    #     ]
+    #     res =self.chatAndy(messages)
+    #     messages.append(res)
+    #     return res.content
 
 
         
