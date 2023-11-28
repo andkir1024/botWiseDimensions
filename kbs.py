@@ -138,7 +138,7 @@ class kbs:
             await msg.answer("Для тестирования нет необходимых навыков")
             return
 
-        msgReply,indexKey =gigaChat.start(keyAdded)
+        msgReply,indexKey, msgAnswer =gigaChat.start(keyAdded)
 
         # msqQuestIndex = questionProcessor.get_quest(menu)
         # msqQuest = questionProcessor.get_quest_byId(menu, msqQuestIndex)['qwest']
@@ -152,6 +152,7 @@ class kbs:
         userInfo.save()
 
         await msg.answer(msgReply)
+        await msg.answer(msgAnswer)
         return
         
     async def showAppParameters(selMenu, msg: types.Message, bot):

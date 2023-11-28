@@ -45,7 +45,7 @@ class gigaChatProcessor:
                 keyAdded.append(key)
                 
         return keyAdded
-    def start(self, keyAdded):
+    def start0(self, keyAdded):
         lenKey = len(keyAdded)
         indexKey = random.randint(0,lenKey-1)
         roleReq = MessagesRole.ASSISTANT
@@ -67,6 +67,8 @@ class gigaChatProcessor:
             # Ты рекрутер.
             # Придумай мне задачу на Python для кандидата на должность программиста
             # Придумай мне вопрос по знанию языка Python 
+            # какие вопросы задать python-программисту, чтобы проверить уровень владения Pandas на интервью? Сразу напиши правильные ответы к каждому вопросу 
+            # какой один вопрос задать senior python-программисту, чтобы проверить уровень владения  на интервью? Сразу напиши правильные ответ к каждому вопросу
         messages = [
             SystemMessage(
                 # role = MessagesRole.USER,
@@ -77,8 +79,12 @@ class gigaChatProcessor:
         ]
         res =self.chatAndy(messages)
         messages.append(res)
+        
         self.counter += 1
         outStr = res.content
+        
+        print(outStr)
+        
         indexStart = outStr.find(":")
         if indexStart > 0:
             outStr = outStr[indexStart+3:]
@@ -98,4 +104,103 @@ class gigaChatProcessor:
     #     return res.content
 
 
+    def start(self, keyAdded):
+        lenKey = len(keyAdded)
+        indexKey = random.randint(0,lenKey-1)
+        roleReq = MessagesRole.ASSISTANT
+        roleReq = MessagesRole.USER
+        roleReq = MessagesRole.SYSTEM
+        prefReq =""
+# 1
+        # template = "Ты полезный ассистент, который умеет переводить {input_language} на {output_language}."
+        # system_message_prompt = SystemMessagePromptTemplate.from_template(template)
+        # human_template = "{text}"
+        # human_message_prompt = HumanMessagePromptTemplate.from_template(human_template)
+
+        # chat_prompt = ChatPromptTemplate.from_messages(
+        #     [system_message_prompt, human_message_prompt]
+        # )
+
+        # # get a chat completion from the formatted messages
+        # zz= self.chatAndy(
+        #     chat_prompt.format_prompt(
+        #         input_language="английский",
+        #         output_language="русский",
+        #         text="Translate this sentense. I love programming.",
+        #     ).to_messages()
+        # )
+        # print(zz.content)
+
+        
+# 2
+        messages = [
+            SystemMessage(
+                # max_tokens = 10,
+                content="Ты работодатель, который ищет ведущего программиста. Ты задаешь соискателю вопросы"
+                # content="Ты работодатель, который ищет ведущего программиста на Python. Ты задаешь соискателю вопросы"
+                # content="Ты полезный ассистент, который умеет переводить русский на английский."
+            ),
+            # HumanMessage(content="Придумай соискателю задачу на Yii2. Я опытный программист на Python"),
+            HumanMessage(content="Придумай соискателю сложную вопрос на OpenGL. Я опытный программист"),
+            # HumanMessage(content="Придумай соискателю сложную задачу на Python. Я опытный программист на Python"),
+            # HumanMessage(content="Придумай соискателю сложную задачу на Python + Yii2. Я опытный программист на Python"),
+            # HumanMessage(content="Переведи это предложение. Я люблю программирование."),
+        ]
+        zz= self.chatAndy(messages)
+        print("\n"+"\n"+zz.content)
+
+        messages = [
+            SystemMessage(
+                # max_tokens = 10,
+                # content="Ты программист на Python"
+                content="Ты программист"
+            ),
+            # HumanMessage(content="Реши эту задачу на Python"+zz.content, example=True),
+            HumanMessage(content="Ответь на этот вопрос OpenGL"+zz.content, example=True),
+        ]
+        zz1= self.chatAndy(messages)
+        print("\n"+"\nРЕШЕНИЕ"+zz1.content)
+
+        return prefReq + zz.content, indexKey, zz1.content 
+
+        # xx= AIMessage(content='I love programming.', additional_kwargs={}, example=False)
+# 3
+
+        msg = keyAdded[indexKey]
+        prefReq = f"[{msg[0]}] "
+        msgReq = f"Ты рекрутер. Напише мне задачу на Python для кандидата на должность программиста. Сразу напиши правильные ответ"
+
+        messages = [
+            SystemMessage(
+                role = roleReq,
+                # temperature = 2,
+                content=msgReq
+            )
+        ]
+        
+        # messages = [
+        #     AssistantMessage(
+        #         # temperature = 2,
+        #         HumanMessage(content="Hi, how are you?"),
+        #         AIMessage(content="Good, how are you?")
+        #         # content=msgReq
+        #     )
+        # ]
+        # messages = [
+        #     HumanMessage(content="Hi, how are you?"),
+        #     AIMessage(content="Good, how are you?"),
+        # ]
+        # get_buffer_string(messages)
+        res =self.chatAndy(messages)
+        messages.append(res)
+        
+        self.counter += 1
+        outStr = res.content
+        
+        print(outStr)
+        
+        indexStart = outStr.find(":")
+        if indexStart > 0:
+            outStr = outStr[indexStart+3:]
+        return prefReq + outStr, indexKey
         
