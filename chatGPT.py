@@ -133,7 +133,16 @@ class gigaChatProcessor:
 
         
 # 2
-        messages = [
+        messagesBadAsk = [
+            SystemMessage(
+                content="Ты работодатель, который ищет ведущего программиста. Ты задаешь соискателю вопросы"
+            ),
+            HumanMessage(content="Придумай соискателю задачу на Yii2. Я опытный программист на Python"),
+        ]
+        BadAskMsg= self.chatAndy(messagesBadAsk)
+        print("\n"+"Неправильный вопрос\n"+BadAskMsg.content)
+
+        messagesAsk = [
             SystemMessage(
                 # max_tokens = 10,
                 content="Ты работодатель, который ищет ведущего программиста. Ты задаешь соискателю вопросы"
@@ -141,27 +150,48 @@ class gigaChatProcessor:
                 # content="Ты полезный ассистент, который умеет переводить русский на английский."
             ),
             # HumanMessage(content="Придумай соискателю задачу на Yii2. Я опытный программист на Python"),
-            HumanMessage(content="Придумай соискателю сложную вопрос на OpenGL. Я опытный программист"),
-            # HumanMessage(content="Придумай соискателю сложную задачу на Python. Я опытный программист на Python"),
+            # HumanMessage(content="Придумай соискателю сложную вопрос на OpenGL. Я опытный программист"),
+            HumanMessage(content="Придумай соискателю сложную задачу на Python. Я опытный программист на Python"),
             # HumanMessage(content="Придумай соискателю сложную задачу на Python + Yii2. Я опытный программист на Python"),
             # HumanMessage(content="Переведи это предложение. Я люблю программирование."),
         ]
-        zz= self.chatAndy(messages)
-        print("\n"+"\n"+zz.content)
+        AskMsg= self.chatAndy(messagesAsk)
+        print("\n"+"\n"+AskMsg.content)
 
-        messages = [
+        messagesAnswer = [
             SystemMessage(
-                # max_tokens = 10,
                 # content="Ты программист на Python"  
+                # n = 2,
+                # repetition_penalty = 1,
+                # top_p = 1,
                 content="Ты программист"
             ),
-            # HumanMessage(content="Реши эту задачу на Python"+zz.content, example=True),
-            HumanMessage(content="Ответь на этот вопрос OpenGL"+zz.content, example=True),
+            HumanMessage(content="Реши эту задачу на Python"+AskMsg.content, example=True),
+            # HumanMessage(content="Ответь на этот вопрос OpenGL"+zz.content, example=True),
         ]
-        zz1= self.chatAndy(messages)
-        print("\n"+"\nРЕШЕНИЕ"+zz1.content)
+        AnswerMsg= self.chatAndy(messagesAnswer)
+        print("\n"+"\nРЕШЕНИЕ\n"+AnswerMsg.content)
 
-        return prefReq + zz.content, indexKey, zz1.content 
+        messagesLevel = [
+            SystemMessage(
+                content="Ты программист"
+            ),
+            # HumanMessage(content="Это правильный ответ:\n"+BadAskMsg.content+"\n на вопрос:\n"+AnswerMsg.content + "?"),
+            HumanMessage(content="Это правильный ответ:\n"+AskMsg.content+"\n на вопрос:\n"+AnswerMsg.content + "?"),
+        ]
+        LevelMsg= self.chatAndy(messagesLevel)
+        print("\n"+"\nОценка правльного ответа:\n"+LevelMsg.content)
+
+        messagesBadLevel = [
+            SystemMessage(
+                content="Ты программист"
+            ),
+            HumanMessage(content="Это правильный ответ:\n"+BadAskMsg.content+"\n на вопрос:\n"+AnswerMsg.content + "?"),
+        ]
+        BadLevelMsg= self.chatAndy(messagesBadLevel)
+        print("\n"+"\nОценка неправльного ответа\n"+BadLevelMsg.content)
+
+        return prefReq + AskMsg.content, indexKey, AnswerMsg.content , LevelMsg.content, BadLevelMsg.content
 
         # xx= AIMessage(content='I love programming.', additional_kwargs={}, example=False)
 # 3
