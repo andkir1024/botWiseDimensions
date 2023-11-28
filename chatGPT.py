@@ -152,7 +152,7 @@ class gigaChatProcessor:
         messages = [
             SystemMessage(
                 # max_tokens = 10,
-                # content="Ты программист на Python"
+                # content="Ты программист на Python"  
                 content="Ты программист"
             ),
             # HumanMessage(content="Реши эту задачу на Python"+zz.content, example=True),
