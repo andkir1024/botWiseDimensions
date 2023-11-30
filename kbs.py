@@ -115,7 +115,8 @@ class kbs:
 
                 # заврешение собеседования
                 if next_menu['next'].lower() == 'StartFirst'.lower():
-                    msgReply = menu.getAssisitans("base", 'answer3', userInfo.assistant)
+                    # msgReply = menu.getAssisitans("base", 'answer3', userInfo.assistant)
+                    msgReply = 'Собеседолвание завершено, начало нового'
                     await msg.answer(msgReply)
                     await kbs.gotoMenu(msg, menu, 'StartFirst', userInfo)
                     return
@@ -138,7 +139,7 @@ class kbs:
             await msg.answer("Для тестирования нет необходимых навыков")
             return
 
-        msgReply,indexKey, msgAnswer, LevelMsg, BadLevelMsg =gigaChat.start(keyAdded)
+        msgReply,indexKey, msgAnswer, LevelMsg, BadLevelMsg =gigaChat.start(keyAdded, msg.text)
 
         # msqQuestIndex = questionProcessor.get_quest(menu)
         # msqQuest = questionProcessor.get_quest_byId(menu, msqQuestIndex)['qwest']
@@ -148,6 +149,9 @@ class kbs:
         userInfo.testedUserMode = 'tech Python'
         # userInfo.testedUserQuestId = indexKey
         # userInfo.testedUserAnswers = userInfo.testedUserAnswers + 'mode:q'  + str(msqQuestIndex)
+        if msgReply is None:
+            return
+
         userInfo.testedUserAnswers = userInfo.testedUserAnswers + 'mode:q'  + msgReply
         userInfo.save()
 
@@ -239,9 +243,14 @@ class kbs:
         if current_menu == "menuSelectUser".lower():
             # testedUserMode = userInfo.testedUserMode + 'einf'
             # userInfo.testedUserAnswers = userInfo.testedUserAnswers + 'mode:' + testedUserMode + msg.text + '\n'
-            userInfo.testedUserAnswers = userInfo.testedUserAnswers + 'mode:a'  + msg.text + '\n'
-            userInfo.save()
-            await kbs.doRequest(menu, msg, userInfo)
+            userMsg = msg.text
+            if len(userMsg)>=1:
+                if userMsg[0]=='?':
+                    pass
+                else:
+                    userInfo.testedUserAnswers = userInfo.testedUserAnswers + 'mode:a'  + msg.text + '\n'
+                    userInfo.save()
+                    await kbs.doRequest(menu, msg, userInfo)
             return
 
         await msg.answer("Непонятно")

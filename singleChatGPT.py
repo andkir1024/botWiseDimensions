@@ -41,14 +41,23 @@ class singleChat:
     #     return inf0
     def nextProcessChat(self, msg):
         self.counter += 1
-        info = singleChat.gptRequst(self,MessagesRole.USER, msg)
+        # info = singleChat.gptRequst(self,MessagesRole.USER, msg)
+        HumanMessage(content=msg),
+        info = self.chatAndy(self.messages)
         return False, info
     def startProcessChat(self, pref):
         self.counter = 0
         if self.messages is not None:
             self.messages.clear()
         if pref.casefold() == "Общ".casefold() :
-            text ="ты рекрутер. задавай вопросы соискателю"
-            info = singleChat.gptRequst(self,MessagesRole.ASSISTANT, text)
+            # text ="ты рекрутер. задавай вопросы соискателю"
+            # info = singleChat.gptRequst(self,MessagesRole.ASSISTANT, text)
+            
+            self.messages = [
+                SystemMessage(
+                    content="Ты эмпатичный бот-психолог, который помогает пользователю решить его проблемы."
+                )
+            ]
+            info = self.chatAndy(self.messages)
             return False, info
         return False, None
