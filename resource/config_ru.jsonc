@@ -64,11 +64,10 @@
 			"title":"Вы в режиме собеседования",
 			"photo":"photo_2.png",
 			"menu":[
-				// {
-				// 	"name":"Начать собеседование",
-				// 	"place":"0",
-				// 	"next":"setTech"
-				// },
+				{
+					"name":"Переход (Отладка)",
+					"next":"setFinishCommon"
+				},
 				{
 					"name":"Отчет",
 					"place":"0",

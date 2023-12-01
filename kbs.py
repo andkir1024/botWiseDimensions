@@ -94,6 +94,13 @@ class kbs:
                         urlUser = next_menu['info']
                         await kbs.doStartReview(menu, urlUser, userInfo, msg)
                         return
+                # отладка (завершение общего опроса)
+                if next_menu['next'].lower() == 'setFinishCommon'.lower():
+                    gigaChat = menu.getGigaChat()
+                    gigaChat.finishCommon()
+                    await msg.answer('Достаточно. Переходим к техническому опросу')
+                    return
+
                 # формирование отчета
                 if next_menu['next'].lower() == 'setReport'.lower():
                     # msg = text(bold('Я могу ответить на следующие команды:'),'/voice', '/photo', '/group', '/note', '/file, /testpre', sep='\n')

@@ -21,12 +21,14 @@ keyWorlds = [["Python","0"],["Java","1"],["PHP","2"],["C++","3"]]
 
 class gigaChatProcessor:
     def __init__(self):
-        self.chatAndy = GigaChat(credentials=andyCred, verify_ssl_certs=False, temperature=1)
+        self.chatAndy = GigaChat(credentials=andyCred, verify_ssl_certs=False)
+        # self.chatAndy = GigaChat(credentials=andyCred, verify_ssl_certs=False, temperature=2)
         self.counterChatCommon = 0
         self.counterChat = 0
         self.isFinishCommonChat = True
         self.commomChat = singleChat(self.chatAndy)
         self.techChat = singleChat(self.chatAndy)
+        self.keyAdded = None
         return
     def testKey(self, testedUserWorks):
         keyAdded = []
@@ -88,15 +90,26 @@ class gigaChatProcessor:
 
     def start(self, keyAdded, msg):
         self.counterChat += 1
+        self.keyAdded = keyAdded
         if self.counterChat == 1:
-            self.isFinishCommonChat, info = self.commomChat.startProcessChat("Общ")
+            self.isFinishCommonChat, info = self.commomChat.startProcessChat("Общ", True)
             return info, -1, None , None, None
         else:
             if self.isFinishCommonChat == False:
-                self.isFinishCommonChat, info = self.commomChat.nextProcessChat(msg)
-            return info, -1, None , None, None
+                test, info = self.commomChat.nextProcessChat(msg)
+                return info, -1, None , None, None
+            else:
+                pass
+                return info, -1, None , None, None
             # lenKey = len(keyAdded)
             # indexKey = random.randint(0,lenKey-1)
             # prefReq =""
             # AskMsg, RightAnswerMsg , LevelMsg, BadLevelMsg = gigaChatProcessor.doFullGptRequstVer2(self, "key");
             # return prefReq + AskMsg, indexKey, RightAnswerMsg , LevelMsg, BadLevelMsg
+    def finishCommon(self):
+        self.isFinishCommonChat = True
+        lenKey = len(self.keyAdded)
+        indexKey = random.randint(0,lenKey-1)
+        prefReq =self.keyAdded[indexKey][0]
+        notMaind, info = self.commomChat.startProcessChat(prefReq, False)
+        return info, -1, None , None, None

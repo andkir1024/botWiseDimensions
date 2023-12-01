@@ -19,6 +19,7 @@ class singleChat:
         self.chatAndy = gigaChat
         self.counter = 0
         self.messages = None
+        self.pref = ""
 
     def gptRequst(self, roleReuest, requestMsg):
         self.messages = [
@@ -42,11 +43,17 @@ class singleChat:
     def nextProcessChat(self, msg):
         self.counter += 1
         # info = singleChat.gptRequst(self,MessagesRole.USER, msg)
-        HumanMessage(content=msg),
+        
+        self.messages.append(HumanMessage(content=msg))
         info = self.chatAndy(self.messages)
-        return False, info
-    def startProcessChat(self, pref):
+        self.messages.append(info)
+    
+        self.counter += 1
+        return False, "[" + self.pref + "] " + info.content
+    def startProcessChat(self, pref, continuedChat):
         self.counter = 0
+        self.pref = pref
+        self.continuedChat = continuedChat
         if self.messages is not None:
             self.messages.clear()
         if pref.casefold() == "Общ".casefold() :
@@ -55,9 +62,23 @@ class singleChat:
             
             self.messages = [
                 SystemMessage(
-                    content="Ты эмпатичный бот-психолог, который помогает пользователю решить его проблемы."
+                    content="Ты строгий бот-рекрутер, который ищет кандидата на роль ведущего программиста. Задавай вопросы соискателю по работе"
+                    # content="Ты ищешь кандидата на роль ведущего программиста. Задавай вопросы соискателю по работе"
+                    # content="Ты рекрутер. Ты ищешь кандидата на роль ведущего программиста. Задавай вопросы соискателю"
+                    # content="Ты рекрутер. Ты ищешь программиста Python. Задавай вопросы соискателю"
+                    # content="ты рекрутер. задавай вопросы соискателю"
+                    # content="ты рекрутер, который задавет вопросы соискателю"
+                    # content="Ты эмпатичный бот-психолог, который помогает пользователю решить его проблемы."
                 )
             ]
             info = self.chatAndy(self.messages)
-            return False, info
+            return False, "[" + self.pref + "] " + info.content
+        else:
+            self.messages = [
+                SystemMessage(
+                    content="Ты строгий бот-рекрутер, который ищет кандидата на роль ведущего программиста. Задавай вопросы соискателю по работе"
+                )
+            ]
+            info = self.chatAndy(self.messages)
+            return False, "[" + self.pref + "] " + info.content
         return False, None
