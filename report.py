@@ -86,6 +86,7 @@ class HHreport:
                     if key == 'q':
                         if indexAnswer < len(answers)-1:
                             answerNext = answers[indexAnswer+1]
+                            # answerNext = answerNext[1:]
                             keyNext = answerNext[0]
                             if keyNext == 'a':
                                 # contentSystem = "Ты опытный программист. Проверь правильность решения"
@@ -93,7 +94,7 @@ class HHreport:
                                 contentSystem = "Ты опытный программист"
                                 contentHuman = "Реши эту задачу:\n" + param
                                 RightAnswerMsg = gigaChat.gptRequst(contentSystem, contentHuman, "Решение")
-                                code = str(HHreport.exractPartText(RightAnswerMsg))
+                                code = HHreport.exractPartText(RightAnswerMsg)
                                 if code is not None:
                                     # await msgBot.answer(code)
 
@@ -113,6 +114,21 @@ class HHreport:
                                     await msgBot.answer(gradeBot)
                                     continue
                                 else:
+                                    contentHuman = "Вопрос. Это правильный ответ?:\n\"\n" + answerNext[1:] + "\n\"\n на вопрос:\n" + param + "?"
+                                    # contentHuman = "Вопрос. Это правильный ответ?:\n\"\n" + code + "\n\"\n на вопрос:\n" + param + "?"
+                                    # contentHuman = "Вопрос. Это правильный ответ:\n" + code + "\n на вопрос:\n" + param + "?"
+                                    gradeMsg = gigaChat.gptRequst(contentSystem, contentHuman, "Оценка правльного ответа")
+                                    grade = HHreport.gradeText(gradeMsg)
+                                    
+                                    gradeBot = f"Вопрос {allQwest} Ответ не правильный"
+                                    if grade:
+                                        gradeBot = f"Вопрос {allQwest} Ответ правильный"
+                                        allRight += 1
+                                    else:
+                                        # await msgBot.answer("Правильный ответ:\n" + code)
+                                        pass
+                                    await msgBot.answer(gradeBot)
+
                                     continue
                         else:
                             pass
