@@ -36,27 +36,21 @@ class HHresume:
             # llNews0 = soup.findAll('div')
             # llNews1 = soup.find_all("div", class_="resume-header-name")
             # llNews2 = soup.find_all("h2", class_="bloko-header-1")
-            llNews2 = soup.find_all("h2", class_="bloko-header-2")
-            llNews3 = soup.find_all("div", class_="resume-block__title-text-wrapper")
+            # llNews2 = soup.find_all("h2", class_="bloko-header-2")
+            # llNews3 = soup.find_all("div", class_="resume-block__title-text-wrapper")
 
             userName = HHresume.extract_info(soup, "h2", "bloko-header-1")
             userPos = HHresume.extract_info(soup, "h2", "bloko-header-2")
 
-            userKey = HHresume.extract_info(soup, "data-qa", "bloko-tag__text")
-            llNews4 = soup.find_all("bloko-tag__text")
-            llNews5 = soup.find_all("span", class_="bloko-tag__section bloko-tag__section_text")
+            llKeys = soup.find_all("span", class_="bloko-tag__section bloko-tag__section_text")
             allKeys =[]
             userPos = ""
-            for key in llNews5:
-                # if 'data-' not in key.next:
-                #     userPos += str(key.next)+"/"
+            for key in llKeys:
                 if 'data-' in str(key.next):
                     break
                 allKeys.append(key.next)
                 userPos += str(key.next)+"/"
                 
-            # bloko-tag__section bloko-tag__section_text
-            # bloko-tag__text
             return (userName, userPos[:-1])
         return None
     def get_links(text):

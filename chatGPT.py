@@ -17,7 +17,10 @@ from singleChatGPT import *
 
 # Авторизация в сервисе GigaChat
 andyCred = "MTI3YzYzN2ItOGIwOC00NDNiLWJmOGItOGM3N2NmNTYxMjZhOjVjYWYxMjljLWJlMjEtNDQ4Yi05M2Q5LTI1N2ZhMmEzMmU2Mw=="
-keyWorlds = [["Python","0"],["Java","1"],["PHP","2"],["C++","3"]]
+keyWorlds = [["Python","0"],["Java","1"],["PHP","2"],["C++","3"],
+             ["JavaScript","4"],["Yii2","5"],["PostgreSQL","6"],
+             ["OpenGL","7"],["OpenCM","8"],["C#","9"],
+             ["MySQL","10"],["Docker","11"],["Git","12"],["REST","13"]]
 
 class gigaChatProcessor:
     def __init__(self):

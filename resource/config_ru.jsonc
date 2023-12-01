@@ -62,13 +62,13 @@
 					"info":"https://spb.hh.ru/applicant/resumes/view?resume=b976def2ff092a85d70039ed1f766a45614547",
 					"place":"2",
 					"next":"menuSelectUser"
-				},
-				{
-					"name":"Неизветстный",
-					"info":"https://spb.hh.ru/resume/c7ab140400085990d20039ed1f5751694e4f50",
-					// "info":"https://spb.hh.ru/applicant/resume/view?resume=c7ab140400085990d20039ed1f5751694e4f50",
-					"next":"menuSelectUser"
 				}
+				// {
+				// 	"name":"Неизветстный",
+				// 	"info":"https://spb.hh.ru/resume/c7ab140400085990d20039ed1f5751694e4f50",
+				// 	// "info":"https://spb.hh.ru/applicant/resume/view?resume=c7ab140400085990d20039ed1f5751694e4f50",
+				// 	"next":"menuSelectUser"
+				// }
 			]
 		},
 		// меню выбора компании торговой точки (предложено выбрать)

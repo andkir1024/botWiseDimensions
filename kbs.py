@@ -103,6 +103,7 @@ class kbs:
                     gigaChat = menu.getGigaChat()
                     await msg.answer('Достаточно. Переходим к техническому опросу')
                     msgReply,indexKey, msgAnswer, LevelMsg, BadLevelMsg =gigaChat.finishCommon()
+                    # первый технический вопрос
                     userInfo.testedUserAnswers = userInfo.testedUserAnswers + 'mode:q'  + msgReply
                     userInfo.save()
                     await msg.answer(msgReply)
@@ -122,7 +123,8 @@ class kbs:
                     # message = "<b>Это сообщение с красным текстом!</b>"
                     # await msg.answer(message, parse_mode="HTML")
 
-                    msgReply = HHreport.infoReport(userInfo, menu)
+                    gigaChat = menu.getGigaChat()
+                    msgReply = await HHreport.infoReport(userInfo, menu, gigaChat, msg)
                     await msg.answer(msgReply)
                     # await msg.answer(msgReply, parse_mode="HTML")
                     return
@@ -161,11 +163,10 @@ class kbs:
         # msqQuestIndex = 0
 
         userInfo.testedUserMode = 'tech Python'
-        # userInfo.testedUserQuestId = indexKey
-        # userInfo.testedUserAnswers = userInfo.testedUserAnswers + 'mode:q'  + str(msqQuestIndex)
         if msgReply is None:
             return
 
+        # технический вопрос
         userInfo.testedUserAnswers = userInfo.testedUserAnswers + 'mode:q'  + msgReply
         userInfo.save()
 
@@ -262,7 +263,8 @@ class kbs:
                 if userMsg[0]=='?':
                     gigaChat = menu.getGigaChat()
                     request = msg.text[1:]
-                    userInfo.testedUserAnswers = userInfo.testedUserAnswers + 'mode:q'  + request
+                    # уточнение технический вопрос
+                    userInfo.testedUserAnswers = userInfo.testedUserAnswers + 'mode:u'  + request
                     msgReply,indexKey, msgAnswer, LevelMsg, BadLevelMsg =gigaChat.nextTech(request)
                     userInfo.testedUserAnswers = userInfo.testedUserAnswers + 'mode:t'  + msgReply
                     userInfo.save()
