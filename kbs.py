@@ -157,11 +157,6 @@ class kbs:
 
         msgReply,indexKey, msgAnswer, LevelMsg, BadLevelMsg =gigaChat.start(keyAdded, msg.text)
 
-        # msqQuestIndex = questionProcessor.get_quest(menu)
-        # msqQuest = questionProcessor.get_quest_byId(menu, msqQuestIndex)['qwest']
-        # msgReply = menu.getAssisitans("base", 'answer5', userInfo.assistant) + ' ' + msqQuest
-        # msqQuestIndex = 0
-
         userInfo.testedUserMode = 'tech Python'
         if msgReply is None:
             return
