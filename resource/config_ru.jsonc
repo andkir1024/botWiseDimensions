@@ -48,6 +48,19 @@
 				{
 					"name":"Андрей",
 					"info":"https://spb.hh.ru/applicant/resumes/view?resume=af263aa3ff03948a760039ed1f4c7a6c464945",
+					"place":"0",
+					"next":"menuSelectUser"
+				},
+				{
+					"name":"Человек 1",
+					"info":"https://spb.hh.ru/applicant/resumes/view?resume=2f86c428ff082173030039ed1f63615579794a",
+					"place":"1",
+					"next":"menuSelectUser"
+				},
+				{
+					"name":"Человек 2",
+					"info":"https://spb.hh.ru/applicant/resumes/view?resume=b976def2ff092a85d70039ed1f766a45614547",
+					"place":"2",
 					"next":"menuSelectUser"
 				},
 				{

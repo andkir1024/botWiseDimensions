@@ -67,11 +67,15 @@ class HHreport:
                         keyNext = answerNext[0]
                         if keyNext == 'q':
                             # msg = msg + '\n<b>Ответ отсутствует</b>\n'
-                            msg = msg + '\nОтвет отсутствует\nОценка: плохо\n'
+                            msg = msg + '\nОтвет отсутствует\n'
                     else:
                         msg = msg + '\nОтвет отсутствует\n'
                 if key == 'a':
                     doAnswer = False
                     msg = msg + '\nОтвет: ' + param
                     # msg = msg + '<b>Оценка:</b>\n'
+                if key == 'q':
+                    msg = msg + '\nУточняющий вопрос: ' + param
+                if key == 't':
+                    msg = msg + '\nОтвет на уточняющий вопрос: ' + param
         return msg        

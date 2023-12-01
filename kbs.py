@@ -70,6 +70,10 @@ class kbs:
         await msg.answer(msgUser)
         
         await kbs.gotoMenu(msg, menu, 'menuSelectUser', userInfo)
+
+        gigaChat = menu.getGigaChat()
+        gigaChat.prepare()
+        
         await kbs.doRequest(menu, msg, userInfo)
         return
     
@@ -97,8 +101,11 @@ class kbs:
                 # отладка (завершение общего опроса)
                 if next_menu['next'].lower() == 'setFinishCommon'.lower():
                     gigaChat = menu.getGigaChat()
-                    gigaChat.finishCommon()
                     await msg.answer('Достаточно. Переходим к техническому опросу')
+                    msgReply,indexKey, msgAnswer, LevelMsg, BadLevelMsg =gigaChat.finishCommon()
+                    userInfo.testedUserAnswers = userInfo.testedUserAnswers + 'mode:q'  + msgReply
+                    userInfo.save()
+                    await msg.answer(msgReply)
                     return
 
                 # формирование отчета
@@ -123,7 +130,7 @@ class kbs:
                 # заврешение собеседования
                 if next_menu['next'].lower() == 'StartFirst'.lower():
                     # msgReply = menu.getAssisitans("base", 'answer3', userInfo.assistant)
-                    msgReply = 'Собеседолвание завершено, начало нового'
+                    msgReply = 'Собеседование завершено'
                     await msg.answer(msgReply)
                     await kbs.gotoMenu(msg, menu, 'StartFirst', userInfo)
                     return
@@ -253,7 +260,13 @@ class kbs:
             userMsg = msg.text
             if len(userMsg)>=1:
                 if userMsg[0]=='?':
-                    pass
+                    gigaChat = menu.getGigaChat()
+                    request = msg.text[1:]
+                    userInfo.testedUserAnswers = userInfo.testedUserAnswers + 'mode:q'  + request
+                    msgReply,indexKey, msgAnswer, LevelMsg, BadLevelMsg =gigaChat.nextTech(request)
+                    userInfo.testedUserAnswers = userInfo.testedUserAnswers + 'mode:t'  + msgReply
+                    userInfo.save()
+                    await msg.answer(msgReply)
                 else:
                     userInfo.testedUserAnswers = userInfo.testedUserAnswers + 'mode:a'  + msg.text + '\n'
                     userInfo.save()

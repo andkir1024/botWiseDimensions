@@ -88,6 +88,11 @@ class gigaChatProcessor:
 
         return inf0, inf1 , inf2, None
 
+    def prepare(self):
+        self.counterChatCommon = 0
+        self.counterChat = 0
+        self.isFinishCommonChat = True
+        pass
     def start(self, keyAdded, msg):
         self.counterChat += 1
         self.keyAdded = keyAdded
@@ -99,7 +104,8 @@ class gigaChatProcessor:
                 test, info = self.commomChat.nextProcessChat(msg)
                 return info, -1, None , None, None
             else:
-                pass
+                # test, info = self.commomChat.nextProcessChat(msg)
+                info,a1,a2,a3,a4 = self.finishCommon()
                 return info, -1, None , None, None
             # lenKey = len(keyAdded)
             # indexKey = random.randint(0,lenKey-1)
@@ -111,5 +117,9 @@ class gigaChatProcessor:
         lenKey = len(self.keyAdded)
         indexKey = random.randint(0,lenKey-1)
         prefReq =self.keyAdded[indexKey][0]
-        notMaind, info = self.commomChat.startProcessChat(prefReq, False)
+        notMaind, info = self.techChat.startProcessChat(prefReq, False)
+        return info, -1, None , None, None
+
+    def nextTech(self, msg):
+        notMaind, info = self.techChat.nextProcessChat(msg)
         return info, -1, None , None, None

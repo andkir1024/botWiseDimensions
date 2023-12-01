@@ -40,6 +40,7 @@ class singleChat:
         
     #     inf0 = singleChat.gptRequst(self,role, text)
     #     return inf0
+    # ?сформулируй вопрос другими словами
     def nextProcessChat(self, msg):
         self.counter += 1
         # info = singleChat.gptRequst(self,MessagesRole.USER, msg)
@@ -72,13 +73,16 @@ class singleChat:
                 )
             ]
             info = self.chatAndy(self.messages)
+            self.messages.append(info)
             return False, "[" + self.pref + "] " + info.content
         else:
+            task = self.pref
             self.messages = [
                 SystemMessage(
-                    content="Ты строгий бот-рекрутер, который ищет кандидата на роль ведущего программиста. Задавай вопросы соискателю по работе"
+                    content=f"Ты строгий бот-рекрутер, который ищет кандидата на роль ведущего программиста. Придумай соискателю сложную вопрос по {task}. Я опытный программист"
                 )
             ]
             info = self.chatAndy(self.messages)
+            self.messages.append(info)
             return False, "[" + self.pref + "] " + info.content
         return False, None
