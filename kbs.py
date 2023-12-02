@@ -277,8 +277,31 @@ class kbs:
         userInfo, isNew = userCurrent.getUserInfo(msg)
         return userInfo, isNew
 
+    async def closeQuiz(menu, msg: types.Message, userInfo):
+        await msg.answer("Собеседование завршено")
+        await msg.answer("Ваш грейд")
+        await kbs.gotoMenu(msg, menu, 'StartFirst', userInfo)
+        return
     # отработка введенных данных
     async def getUserData(menu, current_menu, msg: types.Message, userInfo):
+        # ввод ответа на вопрос
+        if current_menu == "menuRecruting".lower():
+            answer = msg.text
+            gigaChat = menu.getGigaChat()
+            userInfo.testedUserMode += 1
+            userInfo.testedUserAnswers = userInfo.testedUserAnswers + 'mode:a'  + msg.text + '\n'
+            userInfo.save()
+            msgReply  = gigaChat.nextQwest(answer, userInfo.testedUserMode)
+            if msgReply is None:
+                await msg.answer("Ваш грейд по данному навыку")
+                finesSkills = await kbs.startSkillReview(menu, msg, userInfo)
+                if finesSkills:
+                    await kbs.closeQuiz(menu, msg, userInfo)
+                return
+            
+            await msg.answer(f"ответ N:{str(userInfo.testedUserMode)} {msgReply}" )
+            # await kbs.doRequest(menu, msg, userInfo)
+            return
         # ввод url резюме HH
         if current_menu == "StartFirst".lower():
             urlUser = msg.text
@@ -286,6 +309,8 @@ class kbs:
             return
         # ввод ответа на вопрос
         if current_menu == "menuSelectUser".lower():
+            await msg.answer("Нажмита Да\Нет")
+            return
             # testedUserMode = userInfo.testedUserMode + 'einf'
             # userInfo.testedUserAnswers = userInfo.testedUserAnswers + 'mode:' + testedUserMode + msg.text + '\n'
             userMsg = msg.text

@@ -126,3 +126,27 @@ class gigaChatProcessor:
     def nextTech(self, msg):
         notMaind, info = self.techChat.nextProcessChat(msg)
         return info, -1, None , None, None
+    
+    def nextQwest(self, msg, number):
+        grade = "+0"
+        # if number > 5:
+        #     grade = "+1"
+        # if number > 10:
+        #     grade = "+2"
+        # if number > 15:
+        #     grade = "+3"
+        # if number > 25:
+        #     grade = "+4"
+        # if number > 30:
+        #     grade = None
+        if number > 2:
+            grade = "+1"
+        if number > 4:
+            grade = "+2"
+        if number > 6:
+            grade = "+3"
+        if number > 8:
+            grade = "+4"
+        if number > 10:
+            grade = None
+        return grade
