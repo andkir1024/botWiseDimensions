@@ -61,26 +61,61 @@ class kbs:
         userInfo.testedUserMode = ""
         userInfo.testedUserQuestId = -1
         
-        userInfo.save()
         
+        # начало опросы здесь мы после выбора соискателя
         info = 'РЕЗЮМЕ: ' + urlUser
         await msg.answer(info)
         
         msgUser = HHreport.infoUser(user)
         await msg.answer(msgUser)
+        # '''
+        # формирование списка для опроса по пунктам чертнавыков
+        # userInfo.testedUserQuestId = 0
+        # skills = HHreport.extractSkill(userInfo)
+        # skill = skills[userInfo.testedUserQuestId]
+        # msgMenu = f"Вы в режиме собеседования по вашему навыку: <{skill}> \nВы хотите пройти проверку по нему?"   
+        # await kbs.gotoMenu(msg, menu, 'menuSelectUser', userInfo, msgMenu)
         
-        await kbs.gotoMenu(msg, menu, 'menuSelectUser', userInfo)
-
+        # '''
+        await kbs.startSkillReview(menu, msg,userInfo)
+        
         gigaChat = menu.getGigaChat()
         gigaChat.prepare()
         
-        await kbs.doRequest(menu, msg, userInfo)
+        # await kbs.doRequest(menu, msg, userInfo)
+
+        userInfo.save()
         return
+    # начало опроса по новому навыку
+    async def startSkillReview(menu, msg: types.Message, userInfo):
+        # userInfo, isNew = kbs.getMainUserInfo(msg)
+        skills = HHreport.extractSkill(userInfo)
+        if userInfo.testedUserQuestId < 0:
+            userInfo.testedUserQuestId = 0
+        else:
+            userInfo.testedUserQuestId +=1
+        userInfo.save()
+        # собеседование завершено
+        if userInfo.testedUserQuestId >= len(skills):
+            return True
+        skill = skills[userInfo.testedUserQuestId]
+        msgMenu = f"Вы в режиме собеседования по вашему навыку: <{skill}> \nВы хотите пройти проверку по нему?"   
+        await kbs.gotoMenu(msg, menu, 'menuSelectUser', userInfo, msgMenu)
+        return False
     
     async def get_next_kb(menu, msg: types.Message, bot) -> ReplyKeyboardMarkup:
         userInfo, isNew = kbs.getMainUserInfo(msg)
         
         current_menu = userInfo.current_menu.lower()
+        # режим начала опроса
+        # if current_menu == 'StartFirst'.lower():
+        #     if current_menu == 'setContinue'.lower():
+        #         return
+        #     # режим пропуска навыка
+        #     if current_menu == 'setSkip'.lower():
+        #         kbs.startSkillReview(menu, msg)
+        #         return
+        
         # переход к следующему меню
         next_menu = kbs.findNextMenu(menu, msg.text, current_menu, msg, userInfo)
         if next_menu is not None:
@@ -91,7 +126,20 @@ class kbs:
                     await msg.answer(msgReply)
                     
                 menuReply, title, selMenu = menu.getMenu(msgNext, msg, userInfo)
-
+                
+                # режим начала опроса
+                if next_menu['next'].lower() == 'setContinue'.lower():
+                    return
+                # режим пропуска навыка
+                if next_menu['next'].lower() == 'setSkip'.lower():
+                    finesSkills = await kbs.startSkillReview(menu, msg, userInfo)
+                    if finesSkills:
+                        await msg.answer("Собеседование завршено")
+                        await msg.answer("Ваш грейд")
+                        await kbs.gotoMenu(msg, menu, 'StartFirst', userInfo)
+                        
+                    return
+                    
                 # режим выбор соискателя
                 if current_menu == 'StartFirst'.lower():
                     if 'info' in next_menu:
@@ -155,7 +203,7 @@ class kbs:
             await msg.answer("Для тестирования нет необходимых навыков")
             return
 
-        msgReply,indexKey, msgAnswer, LevelMsg, BadLevelMsg =gigaChat.start(keyAdded, msg.text)
+        msgReply,indexKey, msgAnswer, LevelMsg, BadLevelMsg =gigaChat.requestStep(keyAdded, msg.text)
 
         userInfo.testedUserMode = 'tech Python'
         if msgReply is None:

@@ -11,6 +11,16 @@ class HHreport:
         msg = 'Здравствуйте '+ user
         msg = msg  + '\nВаши навыки: '+ prop
         return msg
+    def extractSkill(userInfo):
+        prop= userInfo.testedUserWorks
+        skills = prop.split("/")
+        if len(skills)>0:
+            # skills.insert(0, 'Общие')
+            return skills
+        return None
+    def generatePrompBySkill(skill):
+        msg = "Вы в режиме собеседования по вашему навыку " +  skill
+        return msg
 
     def infoReport1(userInfo : userDB, menu):
         msg = "<b>Отчет по собеседованию</b>" + '\n' + userInfo.testedUserName + '\n' + userInfo.testedUserWorks + '\n'

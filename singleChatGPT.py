@@ -60,7 +60,7 @@ class singleChat:
         if pref.casefold() == "Общ".casefold() :
             # text ="ты рекрутер. задавай вопросы соискателю"
             # info = singleChat.gptRequst(self,MessagesRole.ASSISTANT, text)
-            
+            # еще придумай задачу из Дональд Кнута и реши ее на питоне
             self.messages = [
                 SystemMessage(
                     content="Ты строгий бот-рекрутер, который ищет кандидата на роль ведущего программиста. Задавай вопросы соискателю по работе"
@@ -79,6 +79,7 @@ class singleChat:
             task = self.pref
             self.messages = [
                 SystemMessage(
+                    # еще придумай задачу из Дональд Кнута и реши ее на питоне
                     content=f"Ты строгий бот-рекрутер, который ищет кандидата на роль ведущего программиста. Придумай соискателю сложную вопрос по {task}. Я опытный программист"
                 )
             ]

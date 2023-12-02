@@ -96,7 +96,7 @@ class gigaChatProcessor:
         self.counterChat = 0
         self.isFinishCommonChat = True
         pass
-    def start(self, keyAdded, msg):
+    def requestStep(self, keyAdded, msg):
         self.counterChat += 1
         self.keyAdded = keyAdded
         if self.counterChat == 1:
