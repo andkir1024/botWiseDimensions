@@ -79,6 +79,7 @@ class kbs:
         return
     # начало опроса по новому навыку
     async def startSkillReview(menu, msg: types.Message, userInfo):
+        taskNumber = HHreport.getCurrentNumberTask()
         skills = HHreport.extractSkill(userInfo)
         if userInfo.testedUserQuestId < 0:
             userInfo.testedUserQuestId = 0
