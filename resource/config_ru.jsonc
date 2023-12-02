@@ -94,6 +94,18 @@
 				}
 			]
 		},
+		{
+			"id":"menuRecruting",
+			"title":"Вы в режиме собеседования по вопросу",
+			"menu":[
+				{
+					"name":"Завершить собеседование",
+					"place":"2",
+					"next":"StartFirst"
+				}
+			]
+		},
+
 		/*
 		{
 			"id":"menuSelectUser",

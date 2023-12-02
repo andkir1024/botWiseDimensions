@@ -58,7 +58,7 @@ class kbs:
         userInfo.testedUserName = user[0] if user[0] is not None else "Неизвестный"
         userInfo.testedUserWorks = user[1] if user[1] is not None else "Неуказана"
         userInfo.testedUserAnswers = ""
-        userInfo.testedUserMode = ""
+        userInfo.testedUserMode = -1
         userInfo.testedUserQuestId = -1
         
         
@@ -68,16 +68,7 @@ class kbs:
         
         msgUser = HHreport.infoUser(user)
         await msg.answer(msgUser)
-        # '''
-        # формирование списка для опроса по пунктам чертнавыков
-        # userInfo.testedUserQuestId = 0
-        # skills = HHreport.extractSkill(userInfo)
-        # skill = skills[userInfo.testedUserQuestId]
-        # msgMenu = f"Вы в режиме собеседования по вашему навыку: <{skill}> \nВы хотите пройти проверку по нему?"   
-        # await kbs.gotoMenu(msg, menu, 'menuSelectUser', userInfo, msgMenu)
-        
-        # '''
-        await kbs.startSkillReview(menu, msg,userInfo)
+        await kbs.startSkillReview(menu, msg, userInfo)
         
         gigaChat = menu.getGigaChat()
         gigaChat.prepare()
@@ -88,12 +79,12 @@ class kbs:
         return
     # начало опроса по новому навыку
     async def startSkillReview(menu, msg: types.Message, userInfo):
-        # userInfo, isNew = kbs.getMainUserInfo(msg)
         skills = HHreport.extractSkill(userInfo)
         if userInfo.testedUserQuestId < 0:
             userInfo.testedUserQuestId = 0
         else:
             userInfo.testedUserQuestId +=1
+        userInfo.testedUserMode = 0
         userInfo.save()
         # собеседование завершено
         if userInfo.testedUserQuestId >= len(skills):
@@ -107,14 +98,6 @@ class kbs:
         userInfo, isNew = kbs.getMainUserInfo(msg)
         
         current_menu = userInfo.current_menu.lower()
-        # режим начала опроса
-        # if current_menu == 'StartFirst'.lower():
-        #     if current_menu == 'setContinue'.lower():
-        #         return
-        #     # режим пропуска навыка
-        #     if current_menu == 'setSkip'.lower():
-        #         kbs.startSkillReview(menu, msg)
-        #         return
         
         # переход к следующему меню
         next_menu = kbs.findNextMenu(menu, msg.text, current_menu, msg, userInfo)
@@ -129,6 +112,10 @@ class kbs:
                 
                 # режим начала опроса
                 if next_menu['next'].lower() == 'setContinue'.lower():
+                    skills = HHreport.extractSkill(userInfo)
+                    skill = skills[userInfo.testedUserQuestId]
+                    msgMenu = f"Вы в режиме собеседования по вашему навыку: <{skill}>"
+                    await kbs.gotoMenu(msg, menu, 'menuRecruting', userInfo, msgMenu)
                     return
                 # режим пропуска навыка
                 if next_menu['next'].lower() == 'setSkip'.lower():
