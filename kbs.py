@@ -60,7 +60,11 @@ class kbs:
         userInfo.testedUserAnswers = ""
         userInfo.testedUserMode = -1
         userInfo.testedUserQuestId = -1
-        
+ 
+        # dir_path = os.path.dirname(os.path.realpath(__file__))
+        # dir_path = dir_path + "/result/counter.txt"
+        # await msg.answer_document(InputFile(dir_path))
+ 
         
         # начало опросы здесь мы после выбора соискателя
         info = 'РЕЗЮМЕ: ' + urlUser
@@ -85,7 +89,9 @@ class kbs:
             userInfo.testedUserQuestId = 0
         else:
             userInfo.testedUserQuestId +=1
+        userInfo.testedUserTask = taskNumber
         userInfo.testedUserMode = 0
+        userInfo.testedUserQuestCounter = 0
         userInfo.save()
         # собеседование завершено
         if userInfo.testedUserQuestId >= len(skills):

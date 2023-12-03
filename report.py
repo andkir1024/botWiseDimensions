@@ -17,9 +17,6 @@ class HHreport:
         dir_path = os.path.dirname(os.path.realpath(__file__))
         dir_path = dir_path + "/result/counter.txt"
         
-        # dir_path = '/home/andy/Works/aiMaindProjects/botWiseDimensions/result/1.json'
-        
-        # fileCounter = "." + mainConst.DIR_RESOURCE + "counter.txt"
         counter = 0
         with open(dir_path, "r") as text_file:
             counter = text_file.readline() 
@@ -29,19 +26,7 @@ class HHreport:
             text_file.write(str(counterInt))
 
 
-        return 0
-        # fileCounter = "." + mainConst.DIR_RESOURCE + "counter.txt"
-        # f = open("./resource/counter.txt", 'w+')
-        # print(f.read())
-        # f.write('Hello \n World')
-        # f.close()
-        # pass
-        # with open(fileCounter, 'r') as f:
-        #     counter = f.readline() 
-        #     pass
-        #     # работа с файлом        
-        # # open(fileCounter, 'w')
-        # return 0
+        return counterInt
     def extractSkill(userInfo):
         prop= userInfo.testedUserWorks
         skills = prop.split("/")
