@@ -128,7 +128,7 @@ class gigaChatProcessor:
         return info, -1, None , None, None
     
     def nextQwest(self, msg, number):
-        grade = "+0"
+        grade = 0
         # if number > 5:
         #     grade = "+1"
         # if number > 10:
@@ -140,13 +140,39 @@ class gigaChatProcessor:
         # if number > 30:
         #     grade = None
         if number > 2:
-            grade = "+1"
+            grade = 1
         if number > 4:
-            grade = "+2"
+            grade = 2
         if number > 6:
-            grade = "+3"
+            grade = 3
         if number > 8:
-            grade = "+4"
+            grade = 4
         if number > 10:
             grade = None
-        return grade
+        NextAsk  = f"Вопрос N:{number} {gigaChatProcessor.decodeGrade(grade)}"
+        return grade, NextAsk
+    def allGrades(self):
+        for num in range(1,100):
+            grade, NextAsk = self.nextQwest(None, num)
+            if grade is None:
+                return num-1
+        return 0
+    def decodeGrade(grade):
+        if grade is None:
+            return "_"
+        return str(grade)
+    def decodeGradeSimbole(grade):
+        if grade is None:
+            return "_"
+        match int(grade):
+            case 0:
+                return "Junior"
+            case 1:
+                return "Junior+"
+            case 2:
+                return "Middle"
+            case 3:
+                return "Middle+"
+            case 4:
+                return "Senior"
+        return "+"

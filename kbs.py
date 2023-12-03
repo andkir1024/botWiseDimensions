@@ -87,11 +87,13 @@ class kbs:
         userInfo.testedUserTask = taskNumber
         userInfo.testedUserMode = 0
         userInfo.testedUserQuestCounter = 0
-        userInfo.save()
         # собеседование завершено
         if userInfo.testedUserQuestId >= len(skills):
+            userInfo.save()
             return True
         skill = skills[userInfo.testedUserQuestId]
+        userInfo.testedUserQuestName = skill
+        userInfo.save()
         msgMenu = f"Вы в режиме собеседования по вашему навыку: <{skill}> \nВы хотите пройти проверку по нему?"   
         await kbs.gotoMenu(msg, menu, 'menuSelectUser', userInfo, msgMenu)
         return False
@@ -118,6 +120,15 @@ class kbs:
                     skill = skills[userInfo.testedUserQuestId]
                     msgMenu = f"Вы в режиме собеседования по вашему навыку: <{skill}>"
                     await kbs.gotoMenu(msg, menu, 'menuRecruting', userInfo, msgMenu)
+
+                    # формирование первого вопроса в теме
+                    gigaChat = menu.getGigaChat()
+                    grade, NextAsk  = gigaChat.nextQwest(None, userInfo.testedUserMode)
+                    quest = gigaChatProcessor.decodeGrade(grade) + userInfo.testedUserQuestName
+                    userInfo.testedUserAnswers += f"mode:q<{quest}>{NextAsk}\n"
+                    userInfo.save()
+                    await msg.answer(NextAsk)
+
                     return
                 # режим пропуска навыка
                 if next_menu['next'].lower() == 'setSkip'.lower():
@@ -279,23 +290,30 @@ class kbs:
         return
     # отработка введенных данных
     async def getUserData(menu, current_menu, msg: types.Message, userInfo):
-        # ввод ответа на вопрос
+        # ввод ответа на вопрос и задание следующего вопроса
         if current_menu == "menuRecruting".lower():
             answer = msg.text
             gigaChat = menu.getGigaChat()
             userInfo.testedUserMode += 1
-            userInfo.testedUserAnswers = userInfo.testedUserAnswers + 'mode:a'  + msg.text + '\n'
+            # userInfo.testedUserAnswers = userInfo.testedUserAnswers + 'mode:a'  + msg.text + '\n'
+            grade, NextAsk  = gigaChat.nextQwest(answer, userInfo.testedUserMode)
+
+            quest = gigaChatProcessor.decodeGrade(grade) + userInfo.testedUserQuestName
+            userInfo.testedUserAnswers += f"mode:a<{quest}>{msg.text}\n"
+            userInfo.testedUserAnswers += f"mode:q<{quest}>{NextAsk}\n"
+            
+            # userInfo.testedUserAnswers += f"mode:a<{userInfo.testedUserQuestName}>{msg.text}\n"
+            # userInfo.testedUserAnswers += f"mode:q<{userInfo.testedUserQuestName}>{NextAsk}\n"
+
             userInfo.save()
-            msgReply  = gigaChat.nextQwest(answer, userInfo.testedUserMode)
-            if msgReply is None:
+            if grade is None:
                 await msg.answer("Ваш грейд по данному навыку")
                 finesSkills = await kbs.startSkillReview(menu, msg, userInfo)
                 if finesSkills:
                     await kbs.closeQuiz(menu, msg, userInfo)
                 return
             
-            await msg.answer(f"ответ N:{str(userInfo.testedUserMode)} {msgReply}" )
-            # await kbs.doRequest(menu, msg, userInfo)
+            await msg.answer(NextAsk)
             return
         # ввод url резюме HH
         if current_menu == "StartFirst".lower():

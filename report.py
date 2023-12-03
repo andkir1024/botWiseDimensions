@@ -1,4 +1,5 @@
 import os
+from chatGPT import gigaChatProcessor
 from commonData import mainConst
 from question import questionProcessor
 import userDB
@@ -178,6 +179,21 @@ class HHreport:
             return part
         except:
             return None
+    def tagTextExtract(text):
+        start = text.find('<')
+        end = text.find('>', start)
+        if start < 0 or end < 0:
+            return None
+        tag =text[start+1:end]        
+        return tag
+    def tagTextKill(text):
+        start = text.find('<')
+        end = text.find('>', start)
+        if start < 0 or end < 0:
+            return text
+        tag =text[end+1:]        
+        return tag
+
     async def doReport(userInfo : userDB, menu, gigaChat, msgBot: types.Message):
         task = userInfo.testedUserTask
         dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -187,27 +203,46 @@ class HHreport:
 
         with open(nameFile, "w") as text_file:
             # инфорация о собеседнике
-            msg = f"Отчет по собеседованию  {userInfo.testedUserName}\n"
-            text_file.write(msg)
-
-            msg = f"Навыки  {userInfo.testedUserWorks}\n"
-            text_file.write(msg)
+            text_file.write(f"Отчет по собеседованию  {userInfo.testedUserName}\n")
+            text_file.write(f"Навыки  {userInfo.testedUserWorks}\n")
         
             # отчет о навыках
+            skills = HHreport.extractSkill(userInfo)
             qa = userInfo.testedUserAnswers
             answers = qa.split("mode:")
-            for indexAnswer, answer in enumerate(answers):
-                msg = None
-                if answer != "":
-                    key = answer[0]
-                    param = answer[1:]
-                    if key == 'q':
-                        msg = f"\Вопрос:\n\t{param}"
-                    if key == 'a':
-                        msg = f"\nОтвет:\n\t{param}"
-                if msg is not None:
-                    text_file.write(msg)
+            gigaChat = menu.getGigaChat()
+            maxGrade = gigaChat.allGrades()
 
-            skils = HHreport.extractSkill(userInfo)
+            commonGrades = []
+            for skill in skills:
+                text_file.write(f"Собеседование по {skill}\n")
+                allAnswer = 0
+                allRightAnswer = 0
+                for indexAnswer, answer in enumerate(answers):
+                    if answer != "":
+                        msg = None
+                        key = answer[0]
+                        param = answer[1:]
+                        tagFull = HHreport.tagTextExtract(param)
+                        tag = tagFull[1:]
+                        grade = tagFull[0]
+                        pureText = HHreport.tagTextKill(param)
+                        
+                        if skill.lower() != tag.lower():
+                            continue
+                        
+                        if key == 'q':
+                            msg = f"\nВопрос: {gigaChatProcessor.decodeGradeSimbole(grade)}\n\t{pureText}"
+                        if key == 'a':
+                            msg = f"\nОтвет:\n\t{pureText}"
+                            allAnswer +=1
+                        if msg is not None:
+                            text_file.write(msg)
+                msgSkill = f"\nРезультат по {skill} всего вопросов:{maxGrade} отвечено: {str(allAnswer)}  отвечено правильно: {str(allRightAnswer)}"
+                commonGrades.append(msgSkill)
+            
+            for common in commonGrades:
+                text_file.write(common)
+
         
         return nameFile
