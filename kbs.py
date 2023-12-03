@@ -60,11 +60,6 @@ class kbs:
         userInfo.testedUserAnswers = ""
         userInfo.testedUserMode = -1
         userInfo.testedUserQuestId = -1
- 
-        # dir_path = os.path.dirname(os.path.realpath(__file__))
-        # dir_path = dir_path + "/result/counter.txt"
-        # await msg.answer_document(InputFile(dir_path))
- 
         
         # начало опросы здесь мы после выбора соискателя
         info = 'РЕЗЮМЕ: ' + urlUser
@@ -153,21 +148,14 @@ class kbs:
 
                 # формирование отчета
                 if next_menu['next'].lower() == 'setReport'.lower():
-                    # msg = text(bold('Я могу ответить на следующие команды:'),'/voice', '/photo', '/group', '/note', '/file, /testpre', sep='\n')
-                    # await msg.reply(msg, parse_mode=ParseMode.MARKDOWN)                    
-                    
-                    # message = "<font color='red'>Это сообщение с красным текстом!</font>"
-                    # await msg.send_message(message)
-                    
-                    # message_text = text(bold('\nЯ просто напомню,'), 'что есть', code('команда'), '/help')
-                    # await msg.reply(message_text, parse_mode=ParseMode.MARKDOWN)
-
-                    # message = "<b>Это сообщение с красным текстом!</b>"
-                    # await msg.answer(message, parse_mode="HTML")
-
                     gigaChat = menu.getGigaChat()
-                    msgReply = await HHreport.infoReport(userInfo, menu, gigaChat, msg)
-                    await msg.answer(msgReply)
+                    nameReport = await HHreport.doReport(userInfo, menu, gigaChat, msg)
+
+                    await msg.answer_document(InputFile(nameReport))
+
+                    # gigaChat = menu.getGigaChat()
+                    # msgReply = await HHreport.infoReport(userInfo, menu, gigaChat, msg)
+                    # await msg.answer(msgReply)
                     # await msg.answer(msgReply, parse_mode="HTML")
                     return
 

@@ -178,12 +178,36 @@ class HHreport:
             return part
         except:
             return None
-        # start = text.find('<code>') + 6
-        # end = text.find('</code>', start)
-        # a3 =text[start:end]
+    async def doReport(userInfo : userDB, menu, gigaChat, msgBot: types.Message):
+        task = userInfo.testedUserTask
+        dir_path = os.path.dirname(os.path.realpath(__file__))
+        nameFile = f"{dir_path}/result/test{task}.txt"
 
-        # m = re.search('<code>(.+?)</code>', text)
-        # if m:
-        #     found = m.group(1)
-        #     return found
-        # return None
+        await msgBot.answer("Ждите.\nИдет формирование отчета по собеседованию")
+
+        with open(nameFile, "w") as text_file:
+            # инфорация о собеседнике
+            msg = f"Отчет по собеседованию  {userInfo.testedUserName}\n"
+            text_file.write(msg)
+
+            msg = f"Навыки  {userInfo.testedUserWorks}\n"
+            text_file.write(msg)
+        
+            # отчет о навыках
+            qa = userInfo.testedUserAnswers
+            answers = qa.split("mode:")
+            for indexAnswer, answer in enumerate(answers):
+                msg = None
+                if answer != "":
+                    key = answer[0]
+                    param = answer[1:]
+                    if key == 'q':
+                        msg = f"\Вопрос:\n\t{param}"
+                    if key == 'a':
+                        msg = f"\nОтвет:\n\t{param}"
+                if msg is not None:
+                    text_file.write(msg)
+
+            skils = HHreport.extractSkill(userInfo)
+        
+        return nameFile
