@@ -87,3 +87,46 @@ class singleChat:
             self.messages.append(info)
             return False, "[" + self.pref + "] " + info.content
         return False, None
+
+    # 111111111111111111111111111111
+    def startChat(self, quest):
+        self.counter = 0
+        if self.messages is not None:
+            self.messages.clear()
+        task = self.pref
+        self.messages = [
+            SystemMessage(
+                content=quest
+            )
+        ]
+        info = self.chatAndy(self.messages)
+        self.messages.append(info)
+        return info.content
+    def nextChat(self, msg):
+        # self.messages = [
+        #     SystemMessage(
+        #         content=msg
+        #     )
+        # ]
+        # info = self.chatAndy(self.messages)
+        # self.messages.append(info)
+        # return info.content
+
+        self.counter += 1
+        
+        # self.messages.append(HumanMessage(content="Придумай соискателю еще вопрос по теории"))
+        # self.messages.append(HumanMessage(content="Продолжай придумывать следующий вопрос"))
+        # self.messages.append(HumanMessage(content="придумай еще задачу по программированию в области Математика и теория графов."))
+        # self.messages.append(HumanMessage(content="придумай еще одну задачу по программированию в области Математика и теория графов."))
+        # self.messages.append(HumanMessage(content="Python Developer: вопрос для собеседования"))
+
+        # self.messages.append(HumanMessage(content="Python Developer: придумай еще один другой вопрос для собеседования"))
+        self.messages.append(HumanMessage(content="Python Developer: придумай еще одну задачу для собеседования на Python и реши ее"))
+
+
+        # self.messages.append(SystemMessage(content="придумай еще задачу."))
+        info = self.chatAndy(self.messages)
+        self.messages.append(info)
+    
+        self.counter += 1
+        return info.content

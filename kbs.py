@@ -123,7 +123,7 @@ class kbs:
 
                     # формирование первого вопроса в теме
                     gigaChat = menu.getGigaChat()
-                    grade, NextAsk  = gigaChat.nextQwest(None, userInfo.testedUserMode)
+                    grade, NextAsk  = gigaChat.nextQwest(None, userInfo.testedUserMode, skill)
                     quest = gigaChatProcessor.decodeGrade(grade) + userInfo.testedUserQuestName
                     userInfo.testedUserAnswers += f"mode:q<{quest}>{NextAsk}\n"
                     userInfo.save()
@@ -296,7 +296,7 @@ class kbs:
             gigaChat = menu.getGigaChat()
             userInfo.testedUserMode += 1
             # userInfo.testedUserAnswers = userInfo.testedUserAnswers + 'mode:a'  + msg.text + '\n'
-            grade, NextAsk  = gigaChat.nextQwest(answer, userInfo.testedUserMode)
+            grade, NextAsk  = gigaChat.nextQwest(answer, userInfo.testedUserMode, userInfo.testedUserQuestName)
 
             quest = gigaChatProcessor.decodeGrade(grade) + userInfo.testedUserQuestName
             userInfo.testedUserAnswers += f"mode:a<{quest}>{msg.text}\n"

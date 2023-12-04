@@ -17,15 +17,21 @@ from singleChatGPT import *
 
 # Авторизация в сервисе GigaChat
 andyCred = "MTI3YzYzN2ItOGIwOC00NDNiLWJmOGItOGM3N2NmNTYxMjZhOjVjYWYxMjljLWJlMjEtNDQ4Yi05M2Q5LTI1N2ZhMmEzMmU2Mw=="
-keyWorlds = [["Python","0"],["Java","1"],["PHP","2"],["C++","3"],
-             ["JavaScript","4"],["Yii2","5"],["PostgreSQL","6"],
-             ["OpenGL","7"],["OpenCM","8"],["C#","9"],
-             ["MySQL","10"],["Docker","11"],["Git","12"],["REST","13"]]
+# p прогорапммирование
+# d технология
+keyWorlds = [["Python","p"],["Java","p"],["PHP","p"],["C++","p"],
+             ["JavaScript","p"],["Yii2","d"],["PostgreSQL","d"],
+             ["OpenGL","d"],["OpenCM","d"],["C#","p"],
+             ["MySQL","d"],["Docker","d"],["Git","d"],["REST","d"]]
 
 class gigaChatProcessor:
     def __init__(self):
-        self.chatAndy = GigaChat(credentials=andyCred, verify_ssl_certs=False)
-        # self.chatAndy = GigaChat(credentials=andyCred, verify_ssl_certs=False, temperature=2)
+        # self.chatAndy = GigaChat(credentials=andyCred, verify_ssl_certs=False)
+        # self.chatAndy = GigaChat(credentials=andyCred, verify_ssl_certs=False, temperature=0.5)
+        # self.chatAndy = GigaChat(credentials=andyCred, verify_ssl_certs=False, temperature=2, max_tokens=2024)
+
+        self.chatAndy = GigaChat(credentials=andyCred, verify_ssl_certs=False, max_tokens=2024, temperature=2)
+        # self.chatAndy = GigaChat(credentials=andyCred, verify_ssl_certs=False, max_tokens=2024)
         self.counterChatCommon = 0
         self.counterChat = 0
         self.isFinishCommonChat = True
@@ -127,7 +133,14 @@ class gigaChatProcessor:
         notMaind, info = self.techChat.nextProcessChat(msg)
         return info, -1, None , None, None
     
-    def nextQwest(self, msg, number):
+    def nextQwest(self, msg, number, skill):
+        # нахождение сврйства скила
+        finded = None
+        if skill is not None:
+            for key in keyWorlds:
+                if key[0] == skill:
+                    finded = key
+                    break
         grade = 0
         # if number > 5:
         #     grade = "+1"
@@ -149,11 +162,81 @@ class gigaChatProcessor:
             grade = 4
         if number > 10:
             grade = None
-        NextAsk  = f"Вопрос N:{number} {gigaChatProcessor.decodeGrade(grade)}"
-        return grade, NextAsk
+        if skill is not None:
+            Ask = self.createQwest(grade, key, number)
+            NextAsk  = f"Вопрос N:{number} {gigaChatProcessor.decodeGrade(grade) }\n{Ask}"
+            return grade, NextAsk
+        return grade, ""
+    def createQwest(self, grade, key, number):
+        quest = "Ты ведущий программист, который придумывает задачи по программированию. "
+        # quest = "Ты строгий бот-рекрутер, который ищет кандидата на роль программиста."
+        
+        # quest += "Задавай сложные вопросы соискателю."
+        # quest += "Придумай задачу по языку  {key[0]}. Задача должна сильно отличаться от предидущей"
+        # quest += "Придумай 5 задач по языку  {key[0]}"
+        # quest += "придумай кандидату задачу по программирования из Дональд Кнута"
+        
+        quest += "придумай задачу по программированию в области Математика и теория графов."
+        quest = "Ты продвинутый Python Developer. вопрос для собеседования"
+        quest = "Python Developer: набор вопросов для собеседования"
+        quest = "Python Developer: набор разных вопросов для собеседования"
+        
+        quest = "Ты продвинутый Python Developer: набор случайных вопросов для собеседования"
+        quest = "Ты продвинутый Python Developer: один случайный вопрос для собеседования"
+        
+        quest = "Ты продвинутый Python Developer: один случайный сложный вопрос для собеседования по Python по теории"
+        quest = "Ты продвинутый Python Developer: один случайный сложный вопрос для собеседования по Python по алгоритмам"
+        quest = "Ты продвинутый Python Developer: один случайный сложный вопрос для собеседования по Python по кодированию"
+        quest = "Ты продвинутый Python Developer: одна случайная сложная задача для собеседования по Python и ее решение"
+        quest = "Ты продвинутый Python Developer: одна случайная сложная задача для собеседования по Python и реши ее"
+        
+
+        # if key[1] == 'p':
+        #     # quest +=f" по теории языка {key[0]}"
+        #     quest +=f" по теории языка {key[0]}"
+        #     pass
+        
+        # if grade == 0:
+        #     if key[1] == 'p':
+        #         quest +=f" по теории языка {key[0]}"
+        #         pass
+        #     if key[1] == 'd':
+        #         quest +=f" по теории технологии {key[0]}"
+
+        # if grade == 1:
+        #     if key[1] == 'p':
+        #         quest +=f" по языкy {key[0]}"
+        #         pass
+        #     if key[1] == 'd':
+        #         quest +=f" по технологии {key[0]}"
+
+        if number == 0:
+            info = self.techChat.startChat(quest)
+        else:
+            # info = self.techChat.startChat(quest)
+            info = self.techChat.nextChat(quest)
+        return info
+        # answer = self.rangeAnswer(info,"правильный")
+        # answer = self.rangeAnswer(answer,"пример")
+        # answer = self.rangeAnswer(answer,"решение")
+        # return answer
+    # ограничить ответ до первого вхождения слов  borderKey
+    def rangeAnswer(self, msg, borderKey):
+        index = msg.lower().find(borderKey.lower())
+        if index > 0:
+            return msg[:index]
+        return msg
+
+        # self.messages = [
+        #     SystemMessage(
+        #         content=quest
+        #     )
+        # ]
+        # info = self.chatAndy(self.messages)
+        # return info.content
     def allGrades(self):
         for num in range(1,100):
-            grade, NextAsk = self.nextQwest(None, num)
+            grade, NextAsk = self.nextQwest(None, num, None)
             if grade is None:
                 return num-1
         return 0

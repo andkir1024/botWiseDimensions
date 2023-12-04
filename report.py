@@ -203,6 +203,7 @@ class HHreport:
 
         with open(nameFile, "w") as text_file:
             # инфорация о собеседнике
+            text_file.write(f"Отчет N:  {userInfo.testedUserTask}\n")
             text_file.write(f"Отчет по собеседованию  {userInfo.testedUserName}\n")
             text_file.write(f"Навыки  {userInfo.testedUserWorks}\n")
         
