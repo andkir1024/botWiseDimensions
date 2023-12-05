@@ -18,6 +18,9 @@ from aiogram.types.message import ContentType
 from aiogram.utils.markdown import text, bold, italic, code, pre
 from aiogram.types import ParseMode, InputMediaPhoto, InputMediaVideo, ChatActions
 
+from qwestGenerator import *
+from textUtilty import *
+
 class kbs:
     def get_kb_phone(menu, msg: types.Message) -> ReplyKeyboardMarkup:
         kb_clients = ReplyKeyboardMarkup(resize_keyboard=True)
@@ -118,16 +121,16 @@ class kbs:
                 if next_menu['next'].lower() == 'setContinue'.lower():
                     skills = HHreport.extractSkill(userInfo)
                     skill = skills[userInfo.testedUserQuestId]
-                    msgMenu = f"Вы в режиме собеседования по вашему навыку: <{skill}>"
+                    msgMenu = f"Вы в режиме собеседования по вашему навыку: <{skill}> Ждите вопроса!"
                     await kbs.gotoMenu(msg, menu, 'menuRecruting', userInfo, msgMenu)
 
                     # формирование первого вопроса в теме
                     gigaChat = menu.getGigaChat()
-                    grade, NextAsk  = gigaChat.nextQwest(None, userInfo.testedUserMode, skill)
-                    quest = gigaChatProcessor.decodeGrade(grade) + userInfo.testedUserQuestName
+                    grade, NextAsk, pureAsk  = gigaChat.nextQwest(None, userInfo.testedUserMode, skill, True)
+                    quest = qwestGenator.decodeGrade(grade) + userInfo.testedUserQuestName
                     userInfo.testedUserAnswers += f"mode:q<{quest}>{NextAsk}\n"
                     userInfo.save()
-                    await msg.answer(NextAsk)
+                    await msg.answer(pureAsk)
 
                     return
                 # режим пропуска навыка
@@ -296,7 +299,7 @@ class kbs:
             gigaChat = menu.getGigaChat()
             userInfo.testedUserMode += 1
             # userInfo.testedUserAnswers = userInfo.testedUserAnswers + 'mode:a'  + msg.text + '\n'
-            grade, NextAsk  = gigaChat.nextQwest(answer, userInfo.testedUserMode, userInfo.testedUserQuestName)
+            grade, NextAsk, pureAsk  = gigaChat.nextQwest(answer, userInfo.testedUserMode, userInfo.testedUserQuestName, False)
 
             quest = gigaChatProcessor.decodeGrade(grade) + userInfo.testedUserQuestName
             userInfo.testedUserAnswers += f"mode:a<{quest}>{msg.text}\n"
@@ -313,7 +316,7 @@ class kbs:
                     await kbs.closeQuiz(menu, msg, userInfo)
                 return
             
-            await msg.answer(NextAsk)
+            await msg.answer(pureAsk)
             return
         # ввод url резюме HH
         if current_menu == "StartFirst".lower():

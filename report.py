@@ -4,6 +4,7 @@ from commonData import mainConst
 from question import questionProcessor
 import userDB
 import re
+from qwestGenerator import *
 
 from aiogram import Bot, types
 
@@ -36,7 +37,7 @@ class HHreport:
             return skills
         return None
     def generatePrompBySkill(skill):
-        msg = "Вы в режиме собеседования по вашему навыку " +  skill
+        msg = "Вы в режиме собеседования по вашему навыку 2" +  skill
         return msg
 
     def infoReport1(userInfo : userDB, menu):
@@ -233,7 +234,7 @@ class HHreport:
                             continue
                         
                         if key == 'q':
-                            msg = f"\nВопрос: {gigaChatProcessor.decodeGradeSimbole(grade)}\n\t{pureText}"
+                            msg = f"\nВопрос: {qwestGenator.decodeGradeSimbole(grade)}\n\t{pureText}"
                         if key == 'a':
                             msg = f"\nОтвет:\n\t{pureText}"
                             allAnswer +=1
