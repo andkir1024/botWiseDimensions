@@ -7,6 +7,8 @@ class textUtility:
         return msg
     # подготовка ответа на вывод удалениее ненужных слов
     def prepareAnswer(msg):
+        if msg is None:
+            return "None"
         index = msg.lower().find(":")
         if index > 0:
             msgNex = msg[index+1:]

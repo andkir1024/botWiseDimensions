@@ -27,6 +27,8 @@ class user:
     testedUserTask : int
     testedUserQuestCounter : int
     testedUserQuestName : str
+    testedCurrentRequsts : int
+    testedAllRequsts : str
     def __init__(self):
         self.id = 1335723885
         self.phone = '89218866929'
@@ -49,6 +51,8 @@ class user:
         self.testedUserTask = 0
         self.testedUserQuestCounter = 0
         self.testedUserQuestName = ""
+        self.testedCurrentRequsts = 0
+        self.testedAllRequsts = ""
 
     def __init__(self, message : types.Message):
         from_user = message.from_user
@@ -73,6 +77,8 @@ class user:
         self.testedUserTask = 0
         self.testedUserQuestCounter = 0
         self.testedUserQuestName = ""
+        self.testedCurrentRequsts = 0
+        self.testedAllRequsts = ""
         
     def save(self, clearCounter = True):
         if clearCounter:

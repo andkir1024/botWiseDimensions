@@ -1,4 +1,5 @@
 import random
+import re
 from langchain.chat_models import GigaChat
 from langchain.prompts.chat import (
     ChatPromptTemplate,
@@ -68,7 +69,8 @@ class qwestGenator:
         return "+"
     def allGrades(self):
         for num in range(1,100):
-            grade, NextAsk = self.nextQwest(None, num, None)
+            # grade, NextAsk = self.nextQwest(None, num, None)
+            grade = qwestGenator.calkGradeVer1(num)
             if grade is None:
                 return num-1
         return 0
@@ -80,15 +82,32 @@ class qwestGenator:
         self.counterChat = 0
         pass
     # isFirst true значит первый вопрос по данному skill
-    def nextQwest(self, number, skill, key, isFirst):
+    def nextQwest(self, number, skill, key, isFirst, userInfo):
+        grade = qwestGenator.calkGradeVer1(number)
         if isFirst:
             self.skill = skill
-        grade = qwestGenator.calkGradeVer1(number)
+            allNumber = self.allGrades()
+            # allNumber = 30
+            allQwest = self.doMassQuest(grade, key, int(allNumber/3))
+            singleQwest = self.selectQuest(grade, allQwest, 0)
+            userInfo.testedCurrentRequsts = 0
+            singleQwest  = f"Вопрос N:{number} {qwestGenator.decodeGrade(grade) }\n{textUtility.prepareAnswer(singleQwest)}"
+            return grade, allQwest, singleQwest
+        else:
+            userInfo.testedCurrentRequsts += 1
+            singleQwest = self.selectQuest(grade, userInfo.testedAllRequsts, userInfo.testedCurrentRequsts)
+            if singleQwest is None:
+                return None, "" , ""
+            singleQwest  = f"Вопрос N:{number} {qwestGenator.decodeGrade(grade) }\n{textUtility.prepareAnswer(singleQwest)}"
+            return grade, singleQwest, singleQwest
+        '''
         if skill is not None:
             Ask = self.createQwest(grade, key, number)
             NextAsk  = f"Вопрос N:{number} {qwestGenator.decodeGrade(grade) }\n{Ask}"
             PureAsk  = f"Вопрос N:{number} {qwestGenator.decodeGrade(grade) }\n{textUtility.prepareAnswer(Ask)}"
-            return grade, NextAsk, PureAsk
+            return grade, Ask, Ask
+            # return grade, NextAsk, PureAsk
+        '''
         return grade, "", ""
     def createQwest(self, grade, key, number):
         skill = key[0]
@@ -96,22 +115,25 @@ class qwestGenator:
         prompt = ""
         appCondition  = ""
         if place == 'p':
-            prompt = f"Ты продвинутый {skill} Developer: "
+            prompt = f"Ты продвинутый {skill} - Developer: "
             appCondition  = " Не решай эту задачу"
         if place == 'd':
             prompt = f"Ты продвинутый эксперт в {skill}: "
             appCondition  = " Не печатай ответ"
             
-        quest = f"один случайный вопрос для собеседования по {skill} по теории языка"
+        quest = f"Один случайный вопрос для собеседования по {skill} по теории языка"
         if grade == 1:
-            quest = f"один случайный вопрос для собеседования по {skill} по алгоритмам"
+            quest = f"Один случайный вопрос для собеседования по {skill} по алгоритмам"
         elif grade == 2:
-            quest = f"один случайный вопрос для собеседования по {skill} по алгоритмам"
+            quest = prompt + f"Один случайный вопрос для собеседования по {skill} по кодированию"
         elif grade == 3:
             quest = prompt + f"один случайный сложный вопрос для собеседования по {skill} по кодированию на этом языке"
-        else:
+        elif grade == 4:
             quest = prompt + f"придумай еще одну случайную более сложную задачу для собеседования по {skill}." + appCondition
-        
+        # quest = "Ты продвинутый Python - Developer: придумай 5 случайных и более сложных задач для собеседования по Python. Каждая слудующая задача должна быть сложнее предидущей"
+        quest = "Ты продвинутый Python - Developer: придумай 5 олимпиадных сложных задач для собеседования по Python"
+        quest = "Ты продвинутый Python - Developer. Придумай 10 случайных и более сложных задач для собеседования по Python."
+        quest = "Ты продвинутый Python - Developer. Придумай 10 случайных и более сложных вопросов по теории языка для собеседования по Python."
         # quest = prompt + f"один случайный более сложный вопрос для собеседования по {skill} по теории" + appCondition
         # quest = prompt + f"один случайный более сложный вопрос для собеседования по {skill} по алгоритмам" + appCondition
         # quest = prompt + f"один случайный более сложный вопрос для собеседования по {skill} по кодированию" + appCondition
@@ -128,8 +150,66 @@ class qwestGenator:
         # else:
         #     info = self.nextChat(quest)
         return info
+    def selectQuest(self, grade, allQwest, border):
+        # finded = re.search(r'\d+.', allQwest)
+        # finded = re.findall(r'\d+.', allQwest)
+        finded = re.split(r'\d+.', allQwest)
+        
+        zz = allQwest.replace(".", "W")
+        finded = re.split(r"1W|2W|3W|4W|5W|6W|7W|8W|9W|0W", zz)
+
+        for index, qwest in enumerate(finded):
+            if qwest != '' and index > border-1:
+                return qwest 
+        return None
+    def doMassQuest(self, grade, key, allNumber):
+        skill = key[0]
+        place = key[1]
+        prompt = ""
+        quest = ""
+        questTheory = ""
+        if place == 'p':
+            prompt = f"Ты продвинутый {skill} - Developer: "
+            quest = prompt + f"Придумай {allNumber} случайных и более сложных задач для собеседования по {skill}."
+            questTheory = prompt + f"Придумай {allNumber} случайных и более сложных вопросов по теории языка для собеседования по {skill}."
+        if place == 'd':
+            prompt = f"Ты продвинутый эксперт в {skill}: "
+            quest = prompt + f"Придумай {allNumber} случайных и более сложных задач для собеседования по {skill}."
+            questTheory = prompt + f"Придумай {allNumber} случайных и более сложных вопросов по теории {skill}."
+
+        if self.messages is not None:
+            self.messages.clear()
+        self.messages = [
+            SystemMessage(
+                content=quest
+            )
+        ]
+        infoStart = self.chatAndy(self.messages)
+        self.messages.append(infoStart)
+        
+        self.messages.append(HumanMessage(content=f"придумай еще {allNumber} случайных и более сложных задач для собеседования по программированию на {skill}"))
+        infoApp0 = self.chatAndy(self.messages)
+        self.messages.append(infoApp0)
+
+        # self.messages.append(HumanMessage(content="придумай еще {allNumber} случайных и более сложных задач для собеседования по программированию на {skill}"))
+        # infoApp1 = self.chatAndy(self.messages)
+        # self.messages.append(infoApp1)
+        
+        # вопросы по теории
+        self.messages.clear()
+        self.messages = [
+            SystemMessage(
+                content=questTheory
+            )
+        ]
+        infoTheory = self.chatAndy(self.messages)
+        outMsg = infoTheory.content + "\n" + infoStart.content + "\n" + infoApp0.content
+        # outMsg = infoTheory.content + "\n" + infoStart.content + "\n" + infoApp0.content + "\n" + infoApp1.content
+
+        return outMsg
     # начало и инициализация  gigaChat
     def startChat(self, quest):
+        # return "only test"
         if self.messages is not None:
             self.messages.clear()
         self.messages = [
@@ -142,8 +222,8 @@ class qwestGenator:
         # return info.content
         
         outMsg = info.content + "\nОТВЕТ:\n"
-        # outMsg =info.content + "\nОТВЕТ:\n"
-        self.messages.append(HumanMessage(content="Дай ответ на этот вопрос: " + textUtility.prepareAnswer(info.content)))
+        # self.messages.append(HumanMessage(content="Дай ответ на этот вопрос: " + textUtility.prepareAnswer(info.content)))
+        self.messages.append(HumanMessage(content="придумай еще 10 случайных и более сложных задач для собеседования по Python"))
         info = self.chatAndy(self.messages)
         self.messages.append(info)
         outMsg += info.content

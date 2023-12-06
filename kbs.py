@@ -94,12 +94,33 @@ class kbs:
         if userInfo.testedUserQuestId >= len(skills):
             userInfo.save()
             return True
+        skill = await kbs.chooseSkill(menu, msg, userInfo)
+        if skill is None:
+            userInfo.save()
+            return False    
         skill = skills[userInfo.testedUserQuestId]
         userInfo.testedUserQuestName = skill
         userInfo.save()
         msgMenu = f"Вы в режиме собеседования по вашему навыку: <{skill}> \nВы хотите пройти проверку по нему?"   
         await kbs.gotoMenu(msg, menu, 'menuSelectUser', userInfo, msgMenu)
         return False
+    # нахождение доступного навыка
+    async def chooseSkill(menu, msg: types.Message, userInfo):
+        gigaChat = menu.getGigaChat()
+
+        skills = HHreport.extractSkill(userInfo)
+        skill = skills[userInfo.testedUserQuestId]
+        while True:
+            isEnableSkill = gigaChat.testSkill(skill)
+            if isEnableSkill == False:
+                userInfo.testedUserQuestId +=1
+                if userInfo.testedUserQuestId >= len(skills):
+                    await kbs.gotoMenu(msg, menu, 'StartFirst', userInfo, "Собеседование завршено")
+                    return None
+                skill = skills[userInfo.testedUserQuestId]
+            else:
+                break
+        return skill
     
     async def get_next_kb(menu, msg: types.Message, bot) -> ReplyKeyboardMarkup:
         userInfo, isNew = kbs.getMainUserInfo(msg)
@@ -119,16 +140,33 @@ class kbs:
                 
                 # режим начала опроса
                 if next_menu['next'].lower() == 'setContinue'.lower():
+                    gigaChat = menu.getGigaChat()
+
                     skills = HHreport.extractSkill(userInfo)
                     skill = skills[userInfo.testedUserQuestId]
+                    # # нахождение доступного навыка
+                    # while True:
+                    #     isEnableSkill = gigaChat.testSkill(skill)
+                    #     if isEnableSkill == False:
+                    #         userInfo.testedUserQuestId +=1
+                    #         if userInfo.testedUserQuestId >= len(skills):
+                    #             await msg.answer("Навыки не обрабатываются")
+                    #             await kbs.gotoMenu(msg, menu, 'StartFirst', userInfo, msgMenu)
+                    #             return
+                    #         skill = skills[userInfo.testedUserQuestId]
+                    #     else:
+                    #         break
+                        
                     msgMenu = f"Вы в режиме собеседования по вашему навыку: <{skill}> Ждите вопроса!"
                     await kbs.gotoMenu(msg, menu, 'menuRecruting', userInfo, msgMenu)
 
                     # формирование первого вопроса в теме
-                    gigaChat = menu.getGigaChat()
-                    grade, NextAsk, pureAsk  = gigaChat.nextQwest(None, userInfo.testedUserMode, skill, True)
+                    grade, NextAsk, pureAsk  = gigaChat.nextQwest(None, userInfo.testedUserMode, skill, True, userInfo)
                     quest = qwestGenator.decodeGrade(grade) + userInfo.testedUserQuestName
-                    userInfo.testedUserAnswers += f"mode:q<{quest}>{NextAsk}\n"
+                    userInfo.testedUserAnswers += f"mode:q<{quest}>{pureAsk}\n"
+                    userInfo.testedCurrentRequsts = 0
+                    userInfo.testedAllRequsts = NextAsk
+                    # userInfo.testedUserAnswers += f"mode:q<{quest}>{NextAsk}\n"
                     userInfo.save()
                     await msg.answer(pureAsk)
 
@@ -299,7 +337,7 @@ class kbs:
             gigaChat = menu.getGigaChat()
             userInfo.testedUserMode += 1
             # userInfo.testedUserAnswers = userInfo.testedUserAnswers + 'mode:a'  + msg.text + '\n'
-            grade, NextAsk, pureAsk  = gigaChat.nextQwest(answer, userInfo.testedUserMode, userInfo.testedUserQuestName, False)
+            grade, NextAsk, pureAsk  = gigaChat.nextQwest(answer, userInfo.testedUserMode, userInfo.testedUserQuestName, False, userInfo)
 
             quest = gigaChatProcessor.decodeGrade(grade) + userInfo.testedUserQuestName
             userInfo.testedUserAnswers += f"mode:a<{quest}>{msg.text}\n"
@@ -310,12 +348,13 @@ class kbs:
 
             userInfo.save()
             if grade is None:
-                await msg.answer("Ваш грейд по данному навыку")
+                # await msg.answer("Ваш грейд по данному навыку")
                 finesSkills = await kbs.startSkillReview(menu, msg, userInfo)
                 if finesSkills:
                     await kbs.closeQuiz(menu, msg, userInfo)
                 return
-            
+            if pureAsk =='' or None:
+                pureAsk = "пустое сообщение"
             await msg.answer(pureAsk)
             return
         # ввод url резюме HH

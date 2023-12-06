@@ -20,10 +20,15 @@ from qwestGenerator import *
 andyCred = "MTI3YzYzN2ItOGIwOC00NDNiLWJmOGItOGM3N2NmNTYxMjZhOjVjYWYxMjljLWJlMjEtNDQ4Yi05M2Q5LTI1N2ZhMmEzMmU2Mw=="
 # p прогорапммирование
 # d технология
-keyWorlds = [["Python","p"],["Java","p"],["PHP","p"],["C++","p"],
-             ["JavaScript","p"],["Yii2","d"],["PostgreSQL","d"],
+keyWorlds = [["Python1","p"],["PHP1","p"],["C++","p"],
+             ["Yii2","d"],["PostgreSQL","d"],["Big Data","d"],
              ["OpenGL","d"],["OpenCM","d"],["C#","p"],
              ["MySQL","d"],["Docker","d"],["Git","d"],["REST","d"]]
+
+# keyWorlds = [["Python","p"],["Java","p"],["PHP","p"],["C++","p"],
+#              ["JavaScript","p"],["Yii2","d"],["PostgreSQL","d"],
+#              ["OpenGL","d"],["OpenCM","d"],["C#","p"],
+#              ["MySQL","d"],["Docker","d"],["Git","d"],["REST","d"]]
 
 class gigaChatProcessor:
     def __init__(self):
@@ -31,7 +36,12 @@ class gigaChatProcessor:
         # self.chatAndy = GigaChat(credentials=andyCred, verify_ssl_certs=False, temperature=0.5)
         # self.chatAndy = GigaChat(credentials=andyCred, verify_ssl_certs=False, temperature=2, max_tokens=2024)
 
-        self.chatAndy = GigaChat(credentials=andyCred, verify_ssl_certs=False, max_tokens=2024, temperature=2)
+
+        self.chatAndy = GigaChat(credentials=andyCred, verify_ssl_certs=False, temperature=2, n=3)
+
+
+        # self.chatAndy = GigaChat(credentials=andyCred, verify_ssl_certs=False, temperature=1.5)
+        # self.chatAndy = GigaChat(credentials=andyCred, verify_ssl_certs=False, max_tokens=2024, temperature=2)
         # self.chatAndy = GigaChat(credentials=andyCred, verify_ssl_certs=False, max_tokens=2024)
         self.counterChatCommon = 0
         self.counterChat = 0
@@ -48,6 +58,13 @@ class gigaChatProcessor:
                 keyAdded.append(key)
                 
         return keyAdded
+    # проверка доступен ли данный навык прогрнамме
+    def testSkill(self, skill):
+        for key in keyWorlds:
+            if key[0].lower() in skill.lower():
+                return True
+                
+        return False
    
     def gptRequstVer1(self, roleReuest, requestMsg):
         messages = [
@@ -135,7 +152,7 @@ class gigaChatProcessor:
         notMaind, info = self.techChat.nextProcessChat(msg)
         return info, -1, None , None, None
     
-    def nextQwest(self, msg, number, skill, isFirst):
+    def nextQwest(self, msg, number, skill, isFirst, userInfo):
         # нахождение сврйства скила
         findedKey = None
         if skill is not None:
@@ -143,7 +160,10 @@ class gigaChatProcessor:
                 if key[0] == skill:
                     findedKey = key
                     break
-        return self.qwestChat.nextQwest(number, skill, findedKey, isFirst)
+        if findedKey is not None:
+            return self.qwestChat.nextQwest(number, skill, findedKey, isFirst, userInfo)
+        else:
+            return 0, "Навык не обрабатывается", "Навык не обрабатывается"
         # grade = 0
         # if number > 2:
         #     grade = 1

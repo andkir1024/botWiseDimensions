@@ -7,6 +7,7 @@ import re
 from qwestGenerator import *
 
 from aiogram import Bot, types
+from textUtilty import *
 
 class HHreport:
     def infoUser(userInfo):
@@ -39,38 +40,6 @@ class HHreport:
     def generatePrompBySkill(skill):
         msg = "Вы в режиме собеседования по вашему навыку 2" +  skill
         return msg
-
-    def infoReport1(userInfo : userDB, menu):
-        msg = "<b>Отчет по собеседованию</b>" + '\n' + userInfo.testedUserName + '\n' + userInfo.testedUserWorks + '\n'
-        qa = userInfo.testedUserAnswers
-        answers = qa.split("mode:")
-        for indexAnswer, answer in enumerate(answers):
-            if answer != "":
-                key = answer[0]
-                param = answer[1:]
-                if key == 'q':
-                    # index = int(param)
-                    # msqQuest = questionProcessor.get_quest_byId(menu, index)['qwest']
-                    # msg = msg + '\n<b>Вопрос:</b> ' + msqQuest
-                    msg = msg + '\n<b>Вопрос:</b> ' + param
-
-                    # msqAnswer = questionProcessor.get_quest_byId(menu, index)['answer']
-                    # msqAnswer = msqAnswer.replace("\\n", "\n")
-                    # msg = msg + '\n<b>Правильный ответ:</b> ' + msqAnswer
-                    
-                    if indexAnswer < len(answers)-1:
-                        answerNext = answers[indexAnswer+1]
-                        keyNext = answerNext[0]
-                        if keyNext == 'q':
-                            # msg = msg + '\n<b>Ответ отсутствует</b>\n'
-                            msg = msg + '\n<b>Ответ отсутствует\nОценка: плохо</b>\n'
-                    else:
-                        msg = msg + '\n<b>Ответ отсутствует</b>\n'
-                if key == 'a':
-                    doAnswer = False
-                    msg = msg + '\n<b>Ответ:</b> ' + param
-                    # msg = msg + '<b>Оценка:</b>\n'
-        return msg    
     
     async def infoReport(userInfo : userDB, menu, gigaChat, msgBot: types.Message):
         await msgBot.answer("Формирование отчета по собеседованию (ждите)")
@@ -220,6 +189,9 @@ class HHreport:
                 text_file.write(f"Собеседование по {skill}\n")
                 allAnswer = 0
                 allRightAnswer = 0
+
+                # подготовка вопросов и ответов
+                msgList = []
                 for indexAnswer, answer in enumerate(answers):
                     if answer != "":
                         msg = None
@@ -234,17 +206,60 @@ class HHreport:
                             continue
                         
                         if key == 'q':
-                            msg = f"\nВопрос: {qwestGenator.decodeGradeSimbole(grade)}\n\t{pureText}"
+                            msgList.append('q'+pureText)
                         if key == 'a':
-                            msg = f"\nОтвет:\n\t{pureText}"
-                            allAnswer +=1
-                        if msg is not None:
-                            text_file.write(msg)
+                            msgList.append('a'+pureText)
+
+                for indexQwest in range(0,len(msgList),2):
+                    if len(msgList) > indexQwest+1:
+                        qwest = msgList[indexQwest]
+                        qwest = textUtility.prepareAnswer(qwest)
+                        answer = msgList[indexQwest+1]
+                        test = "Есть вопрос:\n" + qwest + "\nЭто правильный ответ на данный вопрос?\n" +answer
+                        # test = qwest + "\nЭто правильное утверждение на данный вопрос?\n" +answer
+                        reply = await HHreport.testQwestAndAnswer(test, gigaChat)
+                        msgReply ="Правильный ответ"
+                        allAnswer +=1
+                        if reply:
+                            allRightAnswer+=1
+                        else:
+                            msgReply ="Неправильный ответ"
+                        await msgBot.answer(msgReply)
+
+                        
+                        text_file.write(f"ВопросBot:\n\t{qwest}")
+                        # text_file.write(f"ВопросBot: {qwestGenator.decodeGradeSimbole(grade)}\n\t{qwest}")
+                        text_file.write(f"ОтветUser:\n\t{answer}")
+                        text_file.write(f"\n{msgReply}\n")
+                        pass
+                
                 msgSkill = f"\nРезультат по {skill} всего вопросов:{maxGrade} отвечено: {str(allAnswer)}  отвечено правильно: {str(allRightAnswer)}"
                 commonGrades.append(msgSkill)
             
             for common in commonGrades:
                 text_file.write(common)
 
-        
         return nameFile
+    async def testQwestAndAnswer(quest, gigaChat):
+        chatAndy = gigaChat.chatAndy
+        messages = [
+            SystemMessage(
+                content=quest
+            )
+        ]
+        info = chatAndy(messages)
+        messages.append(info)
+        reply = info.content
+        if len(reply)>10:
+            tt = reply[:9]
+            if "Да".lower() in tt.lower():
+                return True
+        return False
+        
+        # outMsg = info.content + "\nОТВЕТ:\n"
+        # # outMsg =info.content + "\nОТВЕТ:\n"
+        # self.messages.append(HumanMessage(content="Дай ответ на этот вопрос: " + textUtility.prepareAnswer(info.content)))
+        # info = self.chatAndy(self.messages)
+        # self.messages.append(info)
+        # outMsg += info.content
+        # return outMsg
