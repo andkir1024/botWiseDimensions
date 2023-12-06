@@ -20,15 +20,15 @@ from qwestGenerator import *
 andyCred = "MTI3YzYzN2ItOGIwOC00NDNiLWJmOGItOGM3N2NmNTYxMjZhOjVjYWYxMjljLWJlMjEtNDQ4Yi05M2Q5LTI1N2ZhMmEzMmU2Mw=="
 # p прогорапммирование
 # d технология
-keyWorlds = [["Python1","p"],["PHP1","p"],["C++","p"],
-             ["Yii2","d"],["PostgreSQL","d"],["Big Data","d"],
-             ["OpenGL","d"],["OpenCM","d"],["C#","p"],
-             ["MySQL","d"],["Docker","d"],["Git","d"],["REST","d"]]
-
-# keyWorlds = [["Python","p"],["Java","p"],["PHP","p"],["C++","p"],
-#              ["JavaScript","p"],["Yii2","d"],["PostgreSQL","d"],
+# keyWorlds = [["Python1","p"],["PHP1","p"],["C++","p"],
+#              ["Yii2","d"],["PostgreSQL","d"],["Big Data","d"],
 #              ["OpenGL","d"],["OpenCM","d"],["C#","p"],
 #              ["MySQL","d"],["Docker","d"],["Git","d"],["REST","d"]]
+
+keyWorlds = [["Python","p"],["Java","p"],["PHP","p"],["C++","p"],
+             ["JavaScript","p"],["Yii2","d"],["PostgreSQL","d"],
+             ["OpenGL","d"],["OpenCM","d"],["C#","p"],
+             ["MySQL","d"],["Docker","d"],["Git","d"],["REST","d"]]
 
 class gigaChatProcessor:
     def __init__(self):
@@ -51,6 +51,8 @@ class gigaChatProcessor:
         self.qwestChat = qwestGenator(self.chatAndy)
         self.keyAdded = None
         return
+    def getQwestChat(self):
+        return self.qwestChat
     def testKey(self, testedUserWorks):
         keyAdded = []
         for key in keyWorlds:

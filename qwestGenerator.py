@@ -22,7 +22,7 @@ class qwestGenator:
         self.counterChat = 0
         self.messages = None
         return
-    def calkGradeVer2(number):
+    def calkGradeVer1(number):
         grade = 0
         if number > 5:
             grade = 1
@@ -35,7 +35,7 @@ class qwestGenator:
         if number > 30:
             grade = None
         return grade
-    def calkGradeVer1(number):
+    def calkGradeVer0(number):
         grade = 0
         if number > 2:
             grade = 1
@@ -155,14 +155,17 @@ class qwestGenator:
         # finded = re.findall(r'\d+.', allQwest)
         finded = re.split(r'\d+.', allQwest)
         
-        zz = allQwest.replace(".", "W")
-        finded = re.split(r"1W|2W|3W|4W|5W|6W|7W|8W|9W|0W", zz)
+        zz = allQwest.replace(".", "JJ")
+        finded = re.split(r"1JJ|2JJ|3JJ|4JJ|5JJ|6JJ|7JJ|8JJ|9JJ|0JJ", zz)
 
         for index, qwest in enumerate(finded):
-            if qwest != '' and index > border-1:
-                return qwest 
+            # if qwest != '' and index >= border-1:
+            if qwest != '' and index > border:
+                qwestPure = qwest.replace("JJ", ".")
+                return qwestPure
         return None
     def doMassQuest(self, grade, key, allNumber):
+        allNumber += 1
         skill = key[0]
         place = key[1]
         prompt = ""

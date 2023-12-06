@@ -182,7 +182,8 @@ class HHreport:
             qa = userInfo.testedUserAnswers
             answers = qa.split("mode:")
             gigaChat = menu.getGigaChat()
-            maxGrade = gigaChat.allGrades()
+            qwestChat = gigaChat.getQwestChat()
+            maxGrade = qwestChat.allGrades()
 
             commonGrades = []
             for skill in skills:
@@ -215,9 +216,15 @@ class HHreport:
                         qwest = msgList[indexQwest]
                         qwest = textUtility.prepareAnswer(qwest)
                         answer = msgList[indexQwest+1]
-                        test = "Есть вопрос:\n" + qwest + "\nЭто правильный ответ на данный вопрос?\n" +answer
-                        # test = qwest + "\nЭто правильное утверждение на данный вопрос?\n" +answer
-                        reply = await HHreport.testQwestAndAnswer(test, gigaChat)
+                        test = "Есть вопрос, нужно проверить правильность ответа на него:\n\""
+                        test+= qwest
+                        test+= "\"Вот ответ:\n\""
+                        test+= answer
+                        test+= "Это правильный ответ на данный вопрос?"
+
+                        # reply, replyMsg = await HHreport.testQwestAndAnswerV1(qwest,answer, gigaChat)
+                        reply, replyMsg = await HHreport.testQwestAndAnswerV0(test, gigaChat)
+
                         msgReply ="Правильный ответ"
                         allAnswer +=1
                         if reply:
@@ -230,6 +237,7 @@ class HHreport:
                         text_file.write(f"ВопросBot:\n\t{qwest}")
                         # text_file.write(f"ВопросBot: {qwestGenator.decodeGradeSimbole(grade)}\n\t{qwest}")
                         text_file.write(f"ОтветUser:\n\t{answer}")
+                        text_file.write(f"ОтветBot:\n\t{replyMsg}")
                         text_file.write(f"\n{msgReply}\n")
                         pass
                 
@@ -240,7 +248,28 @@ class HHreport:
                 text_file.write(common)
 
         return nameFile
-    async def testQwestAndAnswer(quest, gigaChat):
+    async def testQwestAndAnswerV1(qwest,answer, gigaChat):
+        chatAndy = gigaChat.chatAndy
+        messages = [
+            SystemMessage(
+                content="Ты продвинутый продвинутый Python - Developer: Проверь решение этой задачи: \n" + qwest
+            )
+        ]
+        info = chatAndy(messages)
+        messages.append(info)
+        reply = info.content
+        
+        messages.append(HumanMessage(content=f"Это решение правильное?: \т" + answer))
+        infoApp0 = chatAndy(messages)
+        
+        
+        if len(reply)>10:
+            tt = reply[:9]
+            if "Да".lower() in tt.lower():
+                return True, reply
+        return False, reply
+        
+    async def testQwestAndAnswerV0(quest, gigaChat):
         chatAndy = gigaChat.chatAndy
         messages = [
             SystemMessage(
@@ -253,13 +282,6 @@ class HHreport:
         if len(reply)>10:
             tt = reply[:9]
             if "Да".lower() in tt.lower():
-                return True
-        return False
+                return True, reply
+        return False, reply
         
-        # outMsg = info.content + "\nОТВЕТ:\n"
-        # # outMsg =info.content + "\nОТВЕТ:\n"
-        # self.messages.append(HumanMessage(content="Дай ответ на этот вопрос: " + textUtility.prepareAnswer(info.content)))
-        # info = self.chatAndy(self.messages)
-        # self.messages.append(info)
-        # outMsg += info.content
-        # return outMsg
