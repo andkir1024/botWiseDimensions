@@ -8,7 +8,7 @@ from aiogram.types import InputFile
 from question import questionProcessor
 
 from report import HHreport
-
+from grade import *
 
 from aiogram import Bot, types
 from aiogram.utils import executor
@@ -162,7 +162,7 @@ class kbs:
 
                     # формирование первого вопроса в теме
                     grade, NextAsk, pureAsk  = gigaChat.nextQwest(None, userInfo.testedUserMode, skill, True, userInfo)
-                    quest = qwestGenator.decodeGrade(grade) + userInfo.testedUserQuestName
+                    quest = Grade.decodeGrade(grade) + userInfo.testedUserQuestName
                     userInfo.testedUserAnswers += f"mode:q<{quest}>{pureAsk}\n"
                     userInfo.testedCurrentRequsts = 0
                     userInfo.testedAllRequsts = NextAsk
@@ -343,7 +343,7 @@ class kbs:
             # userInfo.testedUserAnswers = userInfo.testedUserAnswers + 'mode:a'  + msg.text + '\n'
             grade, NextAsk, pureAsk  = gigaChat.nextQwest(answer, userInfo.testedUserMode, userInfo.testedUserQuestName, False, userInfo)
 
-            quest = gigaChatProcessor.decodeGrade(grade) + userInfo.testedUserQuestName
+            quest = Grade.decodeGrade(grade) + userInfo.testedUserQuestName
             userInfo.testedUserAnswers += f"mode:a<{quest}>{msg.text}\n"
             userInfo.testedUserAnswers += f"mode:q<{quest}>{NextAsk}\n"
             

@@ -236,7 +236,7 @@ class HHreport:
 
                         
                         text_file.write(f"ВопросBot:\n\t{qwest}")
-                        # text_file.write(f"ВопросBot: {qwestGenator.decodeGradeSimbole(grade)}\n\t{qwest}")
+                        # text_file.write(f"ВопросBot: {Grade.decodeGradeSimbole(grade)}\n\t{qwest}")
                         text_file.write(f"ОтветUser:\n\t{answer}")
                         text_file.write(f"ОтветBot:\n\t{replyMsg}")
                         text_file.write(f"\n{msgReply}\n")
@@ -263,7 +263,7 @@ class HHreport:
             answers = qa.split("mode:")
             gigaChat = menu.getGigaChat()
             qwestChat = gigaChat.getQwestChat()
-            maxGrade = qwestChat.allGrades()
+            maxGrade = Grade.allGrades()
 
             commonGrades = []
             for skill in skills:
@@ -313,7 +313,7 @@ class HHreport:
 
                         
                         text_file.write(f"ВопросBot:\n\t{qwest}")
-                        # text_file.write(f"ВопросBot: {qwestGenator.decodeGradeSimbole(grade)}\n\t{qwest}")
+                        # text_file.write(f"ВопросBot: {Grade.decodeGradeSimbole(grade)}\n\t{qwest}")
                         text_file.write(f"ОтветUser:\n\t{answer}")
                         text_file.write(f"ОтветBot:\n\t{replyMsg}")
                         text_file.write(f"\n{msgReply}\n")

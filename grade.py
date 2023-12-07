@@ -48,7 +48,6 @@ class Grade:
         return str(grade)
     def allGrades():
         for num in range(1,100):
-            # grade, NextAsk = self.nextQwest(None, num, None)
             grade = Grade.calkGradeVer(num)
             if grade is None:
                 return num-1

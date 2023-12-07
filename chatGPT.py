@@ -203,28 +203,3 @@ class gigaChatProcessor:
             return msg[:index]
         return msg
 
-    def allGrades(self):
-        for num in range(1,100):
-            grade, NextAsk, PureAsk = self.nextQwest(None, num, None, False)
-            if grade is None:
-                return num-1
-        return 0
-    def decodeGrade(grade):
-        if grade is None:
-            return "_"
-        return str(grade)
-    # def decodeGradeSimbole(grade):
-    #     if grade is None:
-    #         return "_"
-    #     match int(grade):
-    #         case 0:
-    #             return "Junior"
-    #         case 1:
-    #             return "Junior+"
-    #         case 2:
-    #             return "Middle"
-    #         case 3:
-    #             return "Middle+"
-    #         case 4:
-    #             return "Senior"
-    #     return "+"

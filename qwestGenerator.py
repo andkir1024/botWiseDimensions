@@ -35,25 +35,25 @@ class qwestGenator:
         grade = Grade.calkGradeVer(number)
         if isFirst:
             self.skill = skill
-            allNumber = self.allGrades()
+            allNumber = Grade.allGrades()
             # allNumber = 30
             allQwest = self.doMassQuest(grade, key, int(allNumber/3))
             singleQwest = self.selectQuest(grade, allQwest, 0)
             userInfo.testedCurrentRequsts = 0
-            singleQwest  = f"Вопрос N:{number} {qwestGenator.decodeGrade(grade) }\n{textUtility.prepareAnswer(singleQwest)}"
+            singleQwest  = f"Вопрос N:{number} {Grade.decodeGrade(grade) }\n{textUtility.prepareAnswer(singleQwest)}"
             return grade, allQwest, singleQwest
         else:
             userInfo.testedCurrentRequsts += 1
             singleQwest = self.selectQuest(grade, userInfo.testedAllRequsts, userInfo.testedCurrentRequsts)
             if singleQwest is None:
                 return None, "" , ""
-            singleQwest  = f"Вопрос N:{number} {qwestGenator.decodeGrade(grade) }\n{textUtility.prepareAnswer(singleQwest)}"
+            singleQwest  = f"Вопрос N:{number} {Grade.decodeGrade(grade) }\n{textUtility.prepareAnswer(singleQwest)}"
             return grade, singleQwest, singleQwest
         '''
         if skill is not None:
             Ask = self.createQwest(grade, key, number)
-            NextAsk  = f"Вопрос N:{number} {qwestGenator.decodeGrade(grade) }\n{Ask}"
-            PureAsk  = f"Вопрос N:{number} {qwestGenator.decodeGrade(grade) }\n{textUtility.prepareAnswer(Ask)}"
+            NextAsk  = f"Вопрос N:{number} {Grade.decodeGrade(grade) }\n{Ask}"
+            PureAsk  = f"Вопрос N:{number} {Grade.decodeGrade(grade) }\n{textUtility.prepareAnswer(Ask)}"
             return grade, Ask, Ask
             # return grade, NextAsk, PureAsk
         '''
