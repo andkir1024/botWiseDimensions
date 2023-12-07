@@ -60,18 +60,20 @@ class Grade:
                 max += Grade.calkScaleGrade(grade)
         return max
     def calkScaleGrade(grade):
-        if grade is None:
+        try:
+            if grade is None:
+                return 0
+            match int(grade):
+                case 0:
+                    return 1
+                case 1:
+                    return 1
+                case 2:
+                    return 3
+                case 3:
+                    return 3
+                case 4:
+                    return 5
             return 0
-        match int(grade):
-            case 0:
-                return 1
-            case 1:
-                return 1
-            case 2:
-                return 3
-            case 3:
-                return 3
-            case 4:
-                return 5
-        return 0
-        
+        except Exception:
+            pass

@@ -166,23 +166,6 @@ class gigaChatProcessor:
             return self.qwestChat.nextQwest(number, skill, findedKey, isFirst, userInfo)
         else:
             return 0, "Навык не обрабатывается", "Навык не обрабатывается"
-        # grade = 0
-        # if number > 2:
-        #     grade = 1
-        # if number > 4:
-        #     grade = 2
-        # if number > 6:
-        #     grade = 3
-        # if number > 8:
-        #     grade = 4
-        # # if number > 10:
-        # if number > 3:
-        #     grade = None
-        # if skill is not None:
-        #     Ask = self.createQwest(grade, key, number)
-        #     NextAsk  = f"Вопрос N:{number} {gigaChatProcessor.decodeGrade(grade) }\n{Ask}"
-        #     return grade, NextAsk
-        # return grade, ""
     # def createQwest(self, grade, key, number):
     #     quest = "Ты продвинутый Python Developer: одна случайная сложная задача для собеседования по Python и реши ее"
 

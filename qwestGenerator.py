@@ -47,7 +47,8 @@ class qwestGenator:
             singleQwest = self.selectQuest(grade, userInfo.testedAllRequsts, userInfo.testedCurrentRequsts)
             if singleQwest is None:
                 return None, "" , ""
-            singleQwest  = f"Вопрос N:{number} {Grade.decodeGrade(grade) }\n{textUtility.prepareAnswer(singleQwest)}"
+            singleQwest  = f"Вопрос N:{number} {Grade.decodeGrade(grade) }\n{singleQwest}"
+            # singleQwest  = f"Вопрос N:{number} {Grade.decodeGrade(grade) }\n{textUtility.prepareAnswer(singleQwest)}"
             return grade, singleQwest, singleQwest
         '''
         if skill is not None:
@@ -100,15 +101,16 @@ class qwestGenator:
         #     info = self.nextChat(quest)
         return info
     def selectQuest(self, grade, allQwest, border):
-        # finded = re.search(r'\d+.', allQwest)
-        # finded = re.findall(r'\d+.', allQwest)
+        # allQwest ='1. Что такое полиморфизм в Python? Как он используется для упрощения кода?\n2. Объясните принцип действия рекурсии в Python. Приведите пример использования рекурсии в коде.\n3. В чем разница между синтаксисом первичных и вторичных ключей в словарях Python?\n4. Какие особенности памяти у данных типов в Python: список, строка, кортеж?\n1. Напишите программу, которая читает из файла CSV данные, преобразует их в JSON и сохраняет в другой файл CSV.\n2. Напишите код, который принимает на вход текстовый файл, разбивает его на строки, преобразует каждую строку в числа с плавающей точкой и выводит минимальное и максимальное значения.\n3. Напишите код, который использует словарь для хранения данных о студентах (имя, возраст, университет), затем сортирует словарь по возрасту и выводит отсортированный список студентов.\n4. Напишите код, который читает данные из базы данных MySQL, преобразует их в CSV-файл и сохраняет в него новые данные.\n1. Напишите функцию-генератор, которая будет создавать случайные простые числа до заданного предела и возвращать их в виде списка.\n2. Напишите код, который будет принимать на вход список целых чисел, вычислять их сумму и выводить результат.\n3. Напишите код, который будет использовать алгоритм графовой оптимизации для поиска кратчайшего пути между двумя вершинами в графе, представленном в виде реберной матрицы.\n4. Напишите код, который будет принимать на вход последовательность чисел, находить в ней наибольший общий делитель и выводить его.'
+        
         finded = re.split(r'\d+.', allQwest)
         
         zz = allQwest.replace(".", "JJ")
         finded = re.split(r"1JJ|2JJ|3JJ|4JJ|5JJ|6JJ|7JJ|8JJ|9JJ|0JJ", zz)
 
+        # TEST = finded[4].replace("JJ", ".")
+        # return TEST
         for index, qwest in enumerate(finded):
-            # if qwest != '' and index >= border-1:
             if qwest != '' and index > border:
                 qwestPure = qwest.replace("JJ", ".")
                 return qwestPure
@@ -139,12 +141,15 @@ class qwestGenator:
         infoStart = self.chatAndy(self.messages)
         self.messages.append(infoStart)
         
-        self.messages.append(HumanMessage(content=f"придумай еще {allNumber} случайных и более сложных задач для собеседования по программированию на {skill}"))
+        allNumber = int((allNumber/2))
+        self.messages.append(HumanMessage(content=f"Повышаем уровень сложности. Поменяй тему задач. Придумай еще {allNumber} случайных и более сложных задач для собеседования по программированию на {skill}"))
+        # self.messages.append(HumanMessage(content=f"придумай еще {allNumber} случайных и более сложных задач для собеседования по программированию на {skill}"))
         infoApp0 = self.chatAndy(self.messages)
         self.messages.append(infoApp0)
 
-        # self.messages.append(HumanMessage(content="придумай еще {allNumber} случайных и более сложных задач для собеседования по программированию на {skill}"))
-        # infoApp1 = self.chatAndy(self.messages)
+        allNumber += 1
+        self.messages.append(HumanMessage(content=f"Еще сильно повышаем уровень сложности. Поменяй тему задач. Придумай еще {allNumber} случайных и очень задач для собеседования по программированию на {skill}"))
+        infoApp1 = self.chatAndy(self.messages)
         # self.messages.append(infoApp1)
         
         # вопросы по теории
@@ -155,7 +160,7 @@ class qwestGenator:
             )
         ]
         infoTheory = self.chatAndy(self.messages)
-        outMsg = infoTheory.content + "\n" + infoStart.content + "\n" + infoApp0.content
+        outMsg = infoTheory.content + "\n" + infoStart.content + "\n" + infoApp0.content + "\n" + infoApp1.content
         # outMsg = infoTheory.content + "\n" + infoStart.content + "\n" + infoApp0.content + "\n" + infoApp1.content
 
         return outMsg

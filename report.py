@@ -169,9 +169,18 @@ class HHreport:
         task = userInfo.testedUserTask
         dir_path = os.path.dirname(os.path.realpath(__file__))
         nameFile = f"{dir_path}/result/test{task}.txt"
+        # nameFile = "/home/andy/Works/aiMaindProjects/botWiseDimensions/result/test351_last.txt'"
+        
+        # сохранение пользователя
+        userInfo.saveByName(f"{dir_path}/result/user{task}.txt")
+        # userInfo.loadByName(f"{dir_path}/result/user353.txt")
+
 
         await msgBot.answer("Ждите.\nИдет формирование отчета по собеседованию")
+        commonGradesShort = await HHreport.doReportToFile(userInfo, menu, gigaChat, nameFile, msgBot )
+        return nameFile, commonGradesShort
 
+    async def doReportToFile(userInfo : userDB, menu, gigaChat, nameFile, msgBot ):
         with open(nameFile, "w") as text_file:
             # инфорация о собеседнике
             text_file.write(f"Отчет N:  {userInfo.testedUserTask}\n")
@@ -188,7 +197,7 @@ class HHreport:
 
             commonGrades = []
             commonGradesShort = []
-            gradeMax = Grade.maxGrades()
+            gradeMax = Grade.maxGrades()+1
             for skill in skills:
                 text_file.write(f"Собеседование по {skill}\n")
                 allAnswer = 0
@@ -210,15 +219,20 @@ class HHreport:
                             continue
                         
                         if key == 'q':
-                            msgList.append('q'+pureText)
+                            msgList.append('q' + grade + pureText)
                         if key == 'a':
-                            msgList.append('a'+pureText)
+                            msgList.append('a' + grade + pureText)
                 gradeCurrent = 0
                 for indexQwest in range(0,len(msgList),2):
                     if len(msgList) > indexQwest+1:
-                        qwest = msgList[indexQwest]
-                        qwest = textUtility.prepareAnswer(qwest)
-                        answer = msgList[indexQwest+1]
+                        # qwest = msgList[indexQwest]
+                        # qwest = textUtility.prepareAnswer(qwest)
+                        # answer = msgList[indexQwest+1]
+
+                        qwest = msgList[indexQwest][2:]
+                        answer = msgList[indexQwest+1][2:]
+                        grade = msgList[indexQwest][1]
+
                         test = "Есть вопрос, нужно проверить правильность ответа на него:\n\""
                         test+= qwest
                         test+= "\"Вот ответ:\n\""
@@ -253,84 +267,7 @@ class HHreport:
             for common in commonGrades:
                 text_file.write(common)
 
-        return nameFile, commonGradesShort
-
-    async def doReportToFile(userInfo : userDB, menu, gigaChat, nameFile):
-        with open(nameFile, "w") as text_file:
-            # инфорация о собеседнике
-            text_file.write(f"Отчет N:  {userInfo.testedUserTask}\n")
-            text_file.write(f"Отчет по собеседованию  {userInfo.testedUserName}\n")
-            text_file.write(f"Навыки  {userInfo.testedUserWorks}\n")
-        
-            # отчет о навыках
-            skills = HHreport.extractSkill(userInfo)
-            qa = userInfo.testedUserAnswers
-            answers = qa.split("mode:")
-            gigaChat = menu.getGigaChat()
-            qwestChat = gigaChat.getQwestChat()
-            maxGrade = Grade.allGrades()
-
-            commonGrades = []
-            for skill in skills:
-                text_file.write(f"Собеседование по {skill}\n")
-                allAnswer = 0
-                allRightAnswer = 0
-
-                # подготовка вопросов и ответов
-                msgList = []
-                for indexAnswer, answer in enumerate(answers):
-                    if answer != "":
-                        msg = None
-                        key = answer[0]
-                        param = answer[1:]
-                        tagFull = HHreport.tagTextExtract(param)
-                        tag = tagFull[1:]
-                        grade = tagFull[0]
-                        pureText = HHreport.tagTextKill(param)
-                        
-                        if skill.lower() != tag.lower():
-                            continue
-                        
-                        if key == 'q':
-                            msgList.append('q'+pureText)
-                        if key == 'a':
-                            msgList.append('a'+pureText)
-
-                for indexQwest in range(0,len(msgList),2):
-                    if len(msgList) > indexQwest+1:
-                        qwest = msgList[indexQwest]
-                        qwest = textUtility.prepareAnswer(qwest)
-                        answer = msgList[indexQwest+1]
-                        test = "Есть вопрос, нужно проверить правильность ответа на него:\n\""
-                        test+= qwest
-                        test+= "\"Вот ответ:\n\""
-                        test+= answer
-                        test+= "Это правильный ответ на данный вопрос?"
-
-                        reply, replyMsg = await HHreport.testQwestAndAnswerV0(test, gigaChat)
-
-                        msgReply ="Правильный ответ"
-                        allAnswer +=1
-                        if reply:
-                            allRightAnswer+=1
-                        else:
-                            msgReply ="Неправильный ответ"
-
-                        
-                        text_file.write(f"ВопросBot:\n\t{qwest}")
-                        # text_file.write(f"ВопросBot: {Grade.decodeGradeSimbole(grade)}\n\t{qwest}")
-                        text_file.write(f"ОтветUser:\n\t{answer}")
-                        text_file.write(f"ОтветBot:\n\t{replyMsg}")
-                        text_file.write(f"\n{msgReply}\n")
-                        pass
-                
-                msgSkill = f"\nРезультат по {skill} всего вопросов:{maxGrade} отвечено: {str(allAnswer)}  отвечено правильно: {str(allRightAnswer)}"
-                commonGrades.append(msgSkill)
-            
-            for common in commonGrades:
-                text_file.write(common)
-
-        return nameFile
+        return commonGradesShort
     async def testQwestAndAnswerV1(qwest,answer, gigaChat):
         chatAndy = gigaChat.chatAndy
         messages = [

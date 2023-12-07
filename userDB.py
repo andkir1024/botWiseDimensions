@@ -102,6 +102,25 @@ class user:
         with open(fileUser, "w") as text_file:
             text_file.write(str(s))
         return
+    def saveByName(self, fileUser):
+        s = json.dumps(self.__dict__)
+        with open(fileUser, "w") as text_file:
+            text_file.write(str(s))
+    def loadByName(self, fileUser):
+        exists = os.path.exists(fileUser)
+        if exists:
+            f = open(fileUser)
+            try:
+                data = json.load(f)
+                self.__dict__ = data
+            except:
+                pass
+            try:
+                aa = self.counter
+            except:
+                exec("self.counter=-1")
+            return
+        return
 
     def load(self):
         fileUser = user.getFileName(self.id)
