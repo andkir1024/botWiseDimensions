@@ -184,9 +184,11 @@ class HHreport:
             answers = qa.split("mode:")
             gigaChat = menu.getGigaChat()
             qwestChat = gigaChat.getQwestChat()
-            maxGrade = Grade.allGrades()
+            maxQwests = Grade.allGrades()
 
             commonGrades = []
+            commonGradesShort = []
+            gradeMax = Grade.maxGrades()
             for skill in skills:
                 text_file.write(f"Собеседование по {skill}\n")
                 allAnswer = 0
@@ -211,7 +213,7 @@ class HHreport:
                             msgList.append('q'+pureText)
                         if key == 'a':
                             msgList.append('a'+pureText)
-
+                gradeCurrent = 0
                 for indexQwest in range(0,len(msgList),2):
                     if len(msgList) > indexQwest+1:
                         qwest = msgList[indexQwest]
@@ -230,25 +232,28 @@ class HHreport:
                         allAnswer +=1
                         if reply:
                             allRightAnswer+=1
+                            gradeCurrent += Grade.calkScaleGrade(grade)
                         else:
                             msgReply ="Неправильный ответ"
                         await msgBot.answer(msgReply)
 
                         
                         text_file.write(f"ВопросBot:\n\t{qwest}")
-                        # text_file.write(f"ВопросBot: {Grade.decodeGradeSimbole(grade)}\n\t{qwest}")
                         text_file.write(f"ОтветUser:\n\t{answer}")
                         text_file.write(f"ОтветBot:\n\t{replyMsg}")
                         text_file.write(f"\n{msgReply}\n")
                         pass
                 
-                msgSkill = f"\nРезультат по {skill} всего вопросов:{maxGrade} отвечено: {str(allAnswer)}  отвечено правильно: {str(allRightAnswer)}"
+                msgSkill = f"\nРезультат по {skill} всего вопросов:{maxQwests} отвечено: {str(allAnswer)}  отвечено правильно: {str(allRightAnswer)}"
                 commonGrades.append(msgSkill)
+
+                msgSkill = f"\nРезультат по {skill}\n максимум: {gradeMax} набрано: {str(gradeCurrent)}"
+                commonGradesShort.append(msgSkill)
             
             for common in commonGrades:
                 text_file.write(common)
 
-        return nameFile, commonGrades
+        return nameFile, commonGradesShort
 
     async def doReportToFile(userInfo : userDB, menu, gigaChat, nameFile):
         with open(nameFile, "w") as text_file:

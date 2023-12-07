@@ -52,4 +52,26 @@ class Grade:
             if grade is None:
                 return num-1
         return 0
-    
+    def maxGrades():
+        max = 0
+        for num in range(1,100):
+            grade = Grade.calkGradeVer(num)
+            if grade is not None:
+                max += Grade.calkScaleGrade(grade)
+        return max
+    def calkScaleGrade(grade):
+        if grade is None:
+            return 0
+        match int(grade):
+            case 0:
+                return 1
+            case 1:
+                return 1
+            case 2:
+                return 3
+            case 3:
+                return 3
+            case 4:
+                return 5
+        return 0
+        

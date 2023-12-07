@@ -199,9 +199,11 @@ class kbs:
                 # формирование отчета
                 if next_menu['next'].lower() == 'setReport'.lower():
                     gigaChat = menu.getGigaChat()
-                    nameReport, info = await HHreport.doReport(userInfo, menu, gigaChat, msg)
+                    nameReport, commonGrades = await HHreport.doReport(userInfo, menu, gigaChat, msg)
 
                     await msg.answer_document(InputFile(nameReport))
+                    for grade in commonGrades:
+                        await msg.answer(grade)
 
                     # gigaChat = menu.getGigaChat()
                     # msgReply = await HHreport.infoReport(userInfo, menu, gigaChat, msg)
