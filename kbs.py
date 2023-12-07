@@ -175,9 +175,7 @@ class kbs:
                 if next_menu['next'].lower() == 'setSkip'.lower():
                     finesSkills = await kbs.startSkillReview(menu, msg, userInfo)
                     if finesSkills:
-                        await msg.answer("Собеседование завршено")
-                        await msg.answer("Ваш грейд")
-                        await kbs.gotoMenu(msg, menu, 'StartFirst', userInfo)
+                        await kbs.closeQuiz(menu, msg, userInfo)
                         
                     return
                     
@@ -201,7 +199,7 @@ class kbs:
                 # формирование отчета
                 if next_menu['next'].lower() == 'setReport'.lower():
                     gigaChat = menu.getGigaChat()
-                    nameReport = await HHreport.doReport(userInfo, menu, gigaChat, msg)
+                    nameReport, info = await HHreport.doReport(userInfo, menu, gigaChat, msg)
 
                     await msg.answer_document(InputFile(nameReport))
 
@@ -325,8 +323,14 @@ class kbs:
         return userInfo, isNew
 
     async def closeQuiz(menu, msg: types.Message, userInfo):
-        await msg.answer("Собеседование завршено")
-        await msg.answer("Ваш грейд")
+        await msg.answer("Собеседование завершено")
+        
+        gigaChat = menu.getGigaChat()
+        nameReport, commonGrades = await HHreport.doReport(userInfo, menu, gigaChat, msg)
+        await msg.answer_document(InputFile(nameReport))
+        
+        for grade in commonGrades:
+            await msg.answer(grade)
         await kbs.gotoMenu(msg, menu, 'StartFirst', userInfo)
         return
     # отработка введенных данных

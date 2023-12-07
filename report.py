@@ -5,6 +5,7 @@ from question import questionProcessor
 import userDB
 import re
 from qwestGenerator import *
+from grade import *
 
 from aiogram import Bot, types
 from textUtilty import *
@@ -183,7 +184,7 @@ class HHreport:
             answers = qa.split("mode:")
             gigaChat = menu.getGigaChat()
             qwestChat = gigaChat.getQwestChat()
-            maxGrade = qwestChat.allGrades()
+            maxGrade = Grade.allGrades()
 
             commonGrades = []
             for skill in skills:
@@ -232,6 +233,83 @@ class HHreport:
                         else:
                             msgReply ="Неправильный ответ"
                         await msgBot.answer(msgReply)
+
+                        
+                        text_file.write(f"ВопросBot:\n\t{qwest}")
+                        # text_file.write(f"ВопросBot: {qwestGenator.decodeGradeSimbole(grade)}\n\t{qwest}")
+                        text_file.write(f"ОтветUser:\n\t{answer}")
+                        text_file.write(f"ОтветBot:\n\t{replyMsg}")
+                        text_file.write(f"\n{msgReply}\n")
+                        pass
+                
+                msgSkill = f"\nРезультат по {skill} всего вопросов:{maxGrade} отвечено: {str(allAnswer)}  отвечено правильно: {str(allRightAnswer)}"
+                commonGrades.append(msgSkill)
+            
+            for common in commonGrades:
+                text_file.write(common)
+
+        return nameFile, commonGrades
+
+    async def doReportToFile(userInfo : userDB, menu, gigaChat, nameFile):
+        with open(nameFile, "w") as text_file:
+            # инфорация о собеседнике
+            text_file.write(f"Отчет N:  {userInfo.testedUserTask}\n")
+            text_file.write(f"Отчет по собеседованию  {userInfo.testedUserName}\n")
+            text_file.write(f"Навыки  {userInfo.testedUserWorks}\n")
+        
+            # отчет о навыках
+            skills = HHreport.extractSkill(userInfo)
+            qa = userInfo.testedUserAnswers
+            answers = qa.split("mode:")
+            gigaChat = menu.getGigaChat()
+            qwestChat = gigaChat.getQwestChat()
+            maxGrade = qwestChat.allGrades()
+
+            commonGrades = []
+            for skill in skills:
+                text_file.write(f"Собеседование по {skill}\n")
+                allAnswer = 0
+                allRightAnswer = 0
+
+                # подготовка вопросов и ответов
+                msgList = []
+                for indexAnswer, answer in enumerate(answers):
+                    if answer != "":
+                        msg = None
+                        key = answer[0]
+                        param = answer[1:]
+                        tagFull = HHreport.tagTextExtract(param)
+                        tag = tagFull[1:]
+                        grade = tagFull[0]
+                        pureText = HHreport.tagTextKill(param)
+                        
+                        if skill.lower() != tag.lower():
+                            continue
+                        
+                        if key == 'q':
+                            msgList.append('q'+pureText)
+                        if key == 'a':
+                            msgList.append('a'+pureText)
+
+                for indexQwest in range(0,len(msgList),2):
+                    if len(msgList) > indexQwest+1:
+                        qwest = msgList[indexQwest]
+                        qwest = textUtility.prepareAnswer(qwest)
+                        answer = msgList[indexQwest+1]
+                        test = "Есть вопрос, нужно проверить правильность ответа на него:\n\""
+                        test+= qwest
+                        test+= "\"Вот ответ:\n\""
+                        test+= answer
+                        test+= "Это правильный ответ на данный вопрос?"
+
+                        reply, replyMsg = await HHreport.testQwestAndAnswerV0(test, gigaChat)
+
+                        msgReply ="Правильный ответ"
+                        allAnswer +=1
+                        if reply:
+                            allRightAnswer+=1
+                        else:
+                            msgReply ="Неправильный ответ"
 
                         
                         text_file.write(f"ВопросBot:\n\t{qwest}")

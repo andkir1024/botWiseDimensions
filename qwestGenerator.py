@@ -15,6 +15,7 @@ from langchain.schema import AIMessage, HumanMessage, SystemMessage
 from gigachat.models import Chat, Messages, MessagesRole
 from singleChatGPT import *
 from textUtilty import *
+from grade import *
 
 class qwestGenator:
     def __init__(self, gigaChat):
@@ -22,58 +23,6 @@ class qwestGenator:
         self.counterChat = 0
         self.messages = None
         return
-    def calkGradeVer1(number):
-        grade = 0
-        if number > 5:
-            grade = 1
-        if number > 10:
-            grade = 2
-        if number > 15:
-            grade = 3
-        if number > 25:
-            grade = 4
-        if number > 30:
-            grade = None
-        return grade
-    def calkGradeVer0(number):
-        grade = 0
-        if number > 2:
-            grade = 1
-        if number > 4:
-            grade = 2
-        if number > 6:
-            grade = 3
-        if number > 8:
-            grade = 4
-        if number > 10:
-            grade = None
-        return grade
-    def decodeGrade(grade):
-        if grade is None:
-            return "_"
-        return str(grade)
-    def decodeGradeSimbole(grade):
-        if grade is None:
-            return "_"
-        match int(grade):
-            case 0:
-                return "Junior"
-            case 1:
-                return "Junior+"
-            case 2:
-                return "Middle"
-            case 3:
-                return "Middle+"
-            case 4:
-                return "Senior"
-        return "+"
-    def allGrades(self):
-        for num in range(1,100):
-            # grade, NextAsk = self.nextQwest(None, num, None)
-            grade = qwestGenator.calkGradeVer1(num)
-            if grade is None:
-                return num-1
-        return 0
     # подготовка к началу создания вопросов по всем темам
     # prepareQwest первый вызов на соискателя
     # nextQwest    при согласии по опросу данного навыка вызывается (isFirst true значит первый вопрос по данному skill)
@@ -83,7 +32,7 @@ class qwestGenator:
         pass
     # isFirst true значит первый вопрос по данному skill
     def nextQwest(self, number, skill, key, isFirst, userInfo):
-        grade = qwestGenator.calkGradeVer1(number)
+        grade = Grade.calkGradeVer(number)
         if isFirst:
             self.skill = skill
             allNumber = self.allGrades()

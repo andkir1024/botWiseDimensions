@@ -88,7 +88,13 @@
 					"next":"setSkip"
 				},
 				{
+					"name":"Отчет",
+					"place":"0",
+					"next":"setReport"
+				},
+				{
 					"name":"Завершить собеседование",
+					"place":"2",
 					"next":"StartFirst"
 				}
 			]
