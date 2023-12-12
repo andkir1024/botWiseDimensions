@@ -26,7 +26,29 @@ class Grade:
             grade = None
         return grade
     def calkGradeVer(number):
-        return Grade.calkGradeVer1(number)
+        return Grade.calkGradeVer11(number)
+    def decodeGradeFinal(maxScore, userScore):
+        score = userScore/maxScore
+        if score > (22 / 27.0):
+            return "Senior"
+        elif score > (17 / 27.0):
+            return "Middle"
+        
+        return "Junior"
+    def decodeGradeFinalNew(maxScore, userScore):
+        score = userScore/maxScore
+        if score > 0.9:
+            return "Senior"
+        elif score > 0.7:
+            return "Middle+"
+        elif score > 0.5:
+            return "Middle"
+        elif score > 0.4:
+            return "Junior+"
+        elif score > 0.2:
+            return "Junior"
+        
+        return "Не справились с тестированием"
     def decodeGradeSimbole(grade):
         if grade is None:
             return "_"

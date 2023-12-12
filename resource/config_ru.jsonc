@@ -78,15 +78,79 @@
 			"photo":"photo_2.png",
 			"menu":[
 				{
-					"name":"Да",
+					"name":"Начиная с Junior",
 					"place":"0",
+					"skillStart":"j",
+					"next":"setContinue"
+				},
+				{
+					"name":"Начиная с Middle",
+					"place":"1",
+					"skillStart":"m",
+					"next":"setContinue"
+				},
+				{
+					"name":"Начиная с Senior",
+					"place":"2",
+					"skillStart":"s",
 					"next":"setContinue"
 				},
 				{
 					"name":"Нет",
-					"place":"2",
 					"next":"setSkip"
 				},
+				{
+					"name":"Отчет",
+					"place":"0",
+					"next":"setReport"
+				},
+				{
+					"name":"Завершить собеседование",
+					"place":"2",
+					"next":"StartFirst"
+				}
+			]
+		},
+		{
+			"id":"menuSelectLevel",
+			"title":"Выберете ваш уровень",
+			"menu":[
+				{
+					"name":"Junior",
+					"place":"0",
+					"skillStart":"j",
+					"next":"setContinue"
+				},
+				{
+					"name":"Middle",
+					"place":"1",
+					"skillStart":"m",
+					"next":"setContinue"
+				},
+				{
+					"name":"Senior",
+					"place":"2",
+					"skillStart":"s",
+					"next":"setContinue"
+				},
+				{
+					"name":"Отчет",
+					"place":"0",
+					"next":"setReport"
+				},
+				{
+					"name":"Завершить собеседование",
+					"place":"2",
+					"next":"StartFirst"
+				}
+			]
+		},
+		// меню выбора компании торговой точки (предложено выбрать)
+		{
+			"id":"menuSelectUserPure",
+			"title":"Вы в режиме собеседования",
+			"photo":"photo_2.png",
+			"menu":[
 				{
 					"name":"Отчет",
 					"place":"0",

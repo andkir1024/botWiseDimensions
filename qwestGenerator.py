@@ -40,14 +40,14 @@ class qwestGenator:
             allQwest = self.doMassQuest(grade, key, int(allNumber/3))
             singleQwest = self.selectQuest(grade, allQwest, 0)
             userInfo.testedCurrentRequsts = 0
-            singleQwest  = f"Вопрос N:{number} {Grade.decodeGrade(grade) }\n{textUtility.prepareAnswer(singleQwest)}"
+            singleQwest  = f"Вопрос N:{number} {textUtility.prepareAnswer(singleQwest)}"
             return grade, allQwest, singleQwest
         else:
             userInfo.testedCurrentRequsts += 1
             singleQwest = self.selectQuest(grade, userInfo.testedAllRequsts, userInfo.testedCurrentRequsts)
             if singleQwest is None:
                 return None, "" , ""
-            singleQwest  = f"Вопрос N:{number} {Grade.decodeGrade(grade) }\n{singleQwest}"
+            singleQwest  = f"Вопрос N:{number} \n{singleQwest}"
             # singleQwest  = f"Вопрос N:{number} {Grade.decodeGrade(grade) }\n{textUtility.prepareAnswer(singleQwest)}"
             return grade, singleQwest, singleQwest
         '''
@@ -105,32 +105,45 @@ class qwestGenator:
         
         finded = re.split(r'\d+.', allQwest)
         
-        zz = allQwest.replace(".", "JJ")
+        zz = allQwest.replace(". ", "JJ")
         finded = re.split(r"1JJ|2JJ|3JJ|4JJ|5JJ|6JJ|7JJ|8JJ|9JJ|0JJ", zz)
 
         # TEST = finded[4].replace("JJ", ".")
         # return TEST
         for index, qwest in enumerate(finded):
             if qwest != '' and index > border:
-                qwestPure = qwest.replace("JJ", ".")
+                qwestPure = qwest.replace("JJ", ". ")
+                qwestPure = qwestPure.replace("\n1", "\n")
+                indexDel = qwestPure.lower().find("Конечно, вот".lower())
+                if indexDel>0:
+                    qwestPure = qwestPure[:indexDel]
                 return qwestPure
         return None
     def doMassQuest(self, grade, key, allNumber):
         allNumber += 1
+        allNumber = 15
         skill = key[0]
         place = key[1]
         prompt = ""
         quest = ""
         questTheory = ""
+        outMsg = ""
         if place == 'p':
             prompt = f"Ты продвинутый {skill} - Developer: "
             quest = prompt + f"Придумай {allNumber} случайных и более сложных задач для собеседования по {skill}."
-            questTheory = prompt + f"Придумай {allNumber} случайных и более сложных вопросов по теории языка для собеседования по {skill}."
+            questTheory = prompt + f"Придумай {allNumber} случайных и более сложных вопросов по теории языка для собеседования по {skill}. Используй различные особенности  {skill}. Ответы не нужны."
         if place == 'd':
             prompt = f"Ты продвинутый эксперт в {skill}: "
             quest = prompt + f"Придумай {allNumber} случайных и более сложных задач для собеседования по {skill}."
             questTheory = prompt + f"Придумай {allNumber} случайных и более сложных вопросов по теории {skill}."
 
+        quest = f"Ты продвинутый {skill} - Developer: Придумай {allNumber} случайных и очень сложных задач по {skill}."
+        quest = f"Ты продвинутый {skill} - Developer: Придумай  10 случайных и очень сложных задач на {skill}."
+        quest = f"Ты продвинутый {skill} - Developer: Придумай  10 случайных и очень сложных задач с использованием продвинутых возможностей {skill}. Используй механики языка  {skill}"
+        quest = f"Ты продвинутый {skill} - Developer: Придумай  10 случайных и сложных задач с которые демонстрируют разные возможности языка {skill}. "
+        # quest = f"Ты продвинутый {skill} - Developer: Придумай  10 случайных  задач. "
+        # quest += f"Задачи демонстрируют разные возможности языка {skill}. "
+        
         if self.messages is not None:
             self.messages.clear()
         self.messages = [
@@ -140,7 +153,24 @@ class qwestGenator:
         ]
         infoStart = self.chatAndy(self.messages)
         self.messages.append(infoStart)
-        
+        outMsg = outMsg + infoStart.content + "\n"
+
+        # quest = f"Ты продвинутый {skill} - Developer: Придумай дригие 10 случайных и очень сложных задач на {skill}."
+        # quest = f"Придумай дригие 10 случайные и более сложные задачи"
+        quest = f"Ты продвинутый {skill} - Developer: Придумай  другие 7 случайных и задач с использованием возможностей языка {skill}. Используй новейшие библиотеки"
+        self.messages.append(HumanMessage(content=quest))
+        infoApp0 = self.chatAndy(self.messages)
+        self.messages.append(infoApp0)
+        outMsg = outMsg + infoApp0.content + "\n"
+
+        quest = f"Ты продвинутый {skill} - Developer: Придумай  другие 3 случайные задачи которые демонстрируют разные особенности языка {skill}. Задачи должны быть сложными и использовать нюансы {skill} и использовать машинное обучение , большие данные, статистику. "
+        self.messages.append(HumanMessage(content=quest))
+        infoApp1 = self.chatAndy(self.messages)
+        self.messages.append(infoApp1)
+        outMsg = outMsg + infoApp1.content + "\n"
+
+
+        '''
         allNumber = int((allNumber/2))
         self.messages.append(HumanMessage(content=f"Повышаем уровень сложности. Поменяй тему задач. Придумай еще {allNumber} случайных и более сложных задач для собеседования по программированию на {skill}"))
         # self.messages.append(HumanMessage(content=f"придумай еще {allNumber} случайных и более сложных задач для собеседования по программированию на {skill}"))
@@ -151,7 +181,7 @@ class qwestGenator:
         self.messages.append(HumanMessage(content=f"Еще сильно повышаем уровень сложности. Поменяй тему задач. Придумай еще {allNumber} случайных и очень задач для собеседования по программированию на {skill}"))
         infoApp1 = self.chatAndy(self.messages)
         # self.messages.append(infoApp1)
-        
+        '''
         # вопросы по теории
         self.messages.clear()
         self.messages = [
@@ -160,7 +190,11 @@ class qwestGenator:
             )
         ]
         infoTheory = self.chatAndy(self.messages)
-        outMsg = infoTheory.content + "\n" + infoStart.content + "\n" + infoApp0.content + "\n" + infoApp1.content
+        outMsg = infoTheory.content + "\n" + outMsg
+
+        
+        # outMsg = infoTheory.content + "\n" + infoStart.content + "\n" + infoApp0.content
+        # outMsg = infoTheory.content + "\n" + infoStart.content + "\n" + infoApp0.content + "\n" + infoApp1.content
         # outMsg = infoTheory.content + "\n" + infoStart.content + "\n" + infoApp0.content + "\n" + infoApp1.content
 
         return outMsg

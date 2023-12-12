@@ -193,7 +193,7 @@ class HHreport:
             answers = qa.split("mode:")
             gigaChat = menu.getGigaChat()
             qwestChat = gigaChat.getQwestChat()
-            maxQwests = Grade.allGrades()
+            maxQwests = Grade.allGrades()+1
 
             commonGrades = []
             commonGradesShort = []
@@ -202,6 +202,8 @@ class HHreport:
                 text_file.write(f"Собеседование по {skill}\n")
                 allAnswer = 0
                 allRightAnswer = 0
+                newGradeMax = 0
+                newGradeUser = 0
 
                 # подготовка вопросов и ответов
                 msgList = []
@@ -244,12 +246,17 @@ class HHreport:
 
                         msgReply ="Правильный ответ"
                         allAnswer +=1
+                        coff = 2
+                        if allAnswer>=15:
+                            coff = 3
+                        newGradeMax += coff
                         if reply:
                             allRightAnswer+=1
+                            newGradeUser += coff
                             gradeCurrent += Grade.calkScaleGrade(grade)
                         else:
                             msgReply ="Неправильный ответ"
-                        await msgBot.answer(msgReply)
+                        # await msgBot.answer(msgReply)
 
                         
                         text_file.write(f"ВопросBot:\n\t{qwest}")
@@ -261,8 +268,16 @@ class HHreport:
                 msgSkill = f"\nРезультат по {skill} всего вопросов:{maxQwests} отвечено: {str(allAnswer)}  отвечено правильно: {str(allRightAnswer)}"
                 commonGrades.append(msgSkill)
 
-                msgSkill = f"\nРезультат по {skill}\n максимум: {gradeMax} набрано: {str(gradeCurrent)}"
-                commonGradesShort.append(msgSkill)
+                score = Grade.decodeGradeFinal(gradeMax, gradeCurrent)
+
+                # msgSkill = f"\nРезультат по {skill}\n максимум: {gradeMax} набрано: {str(gradeCurrent)} уровень: {score}"
+                if newGradeUser == 0:
+                    msgSkill = f"\nРезультат по {skill} - не тестировался"
+                    commonGradesShort.append(msgSkill)
+                else:
+                    score = Grade.decodeGradeFinalNew(newGradeMax, newGradeUser)
+                    msgSkill = f"\nРезультат по {skill}\nмаксимум: {newGradeMax} набрано: {str(newGradeUser)}\nУровень: {score}"
+                    commonGradesShort.append(msgSkill)
             
             for common in commonGrades:
                 text_file.write(common)

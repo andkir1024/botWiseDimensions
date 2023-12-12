@@ -72,6 +72,8 @@ class kbs:
         await msg.answer(msgUser)
         await kbs.startSkillReview(menu, msg, userInfo)
         
+        # await kbs.createRequestList(menu, None, msg, userInfo, None)
+        
         gigaChat = menu.getGigaChat()
         gigaChat.prepare()
         
@@ -101,8 +103,13 @@ class kbs:
         skill = skills[userInfo.testedUserQuestId]
         userInfo.testedUserQuestName = skill
         userInfo.save()
-        msgMenu = f"Вы в режиме собеседования по вашему навыку: <{skill}> \nВы хотите пройти проверку по нему?"   
-        await kbs.gotoMenu(msg, menu, 'menuSelectUser', userInfo, msgMenu)
+        # msgMenu = f"Вы в режиме собеседования по вашему навыку: <{skill}> \nВы хотите пройти проверку по нему?"   
+        # await kbs.gotoMenu(msg, menu, 'menuSelectUser', userInfo, msgMenu)
+
+        skillsGranted = menu.getGigaChat().testKey(userInfo.testedUserWorks)
+        msgMenu = f"Вам доступна проверка следующих навыков\nВыберете необходимый"   
+        await kbs.gotoMenuExt(msg, menu, 'menuSelectUserPure', userInfo, msgMenu, skillsGranted)
+
         return False
     # нахождение доступного навыка
     async def chooseSkill(menu, msg: types.Message, userInfo):
@@ -137,6 +144,9 @@ class kbs:
                     await msg.answer(msgReply)
                     
                 menuReply, title, selMenu = menu.getMenu(msgNext, msg, userInfo)
+                skillStart = 'j'
+                if 'skillStart' in next_menu:
+                    skillStart = next_menu['skillStart']
                 
                 # режим начала опроса
                 if next_menu['next'].lower() == 'setContinue'.lower():
@@ -144,18 +154,6 @@ class kbs:
 
                     skills = HHreport.extractSkill(userInfo)
                     skill = skills[userInfo.testedUserQuestId]
-                    # # нахождение доступного навыка
-                    # while True:
-                    #     isEnableSkill = gigaChat.testSkill(skill)
-                    #     if isEnableSkill == False:
-                    #         userInfo.testedUserQuestId +=1
-                    #         if userInfo.testedUserQuestId >= len(skills):
-                    #             await msg.answer("Навыки не обрабатываются")
-                    #             await kbs.gotoMenu(msg, menu, 'StartFirst', userInfo, msgMenu)
-                    #             return
-                    #         skill = skills[userInfo.testedUserQuestId]
-                    #     else:
-                    #         break
                         
                     msgMenu = f"Вы в режиме собеседования по вашему навыку: <{skill}> Ждите вопроса!"
                     await kbs.gotoMenu(msg, menu, 'menuRecruting', userInfo, msgMenu)
@@ -228,6 +226,21 @@ class kbs:
         # отрабатываем ввод данных
         else:
             await kbs.getUserData(menu, current_menu, msg, userInfo)
+
+    # начало опроса
+    async def doBeginRequest(menu, msg: types.Message, userInfo, skill):
+        msgMenu = f"Вы в режиме собеседования по вашему навыку: <{skill}> Ждите вопроса!"
+        await kbs.gotoMenu(msg, menu, 'menuRecruting', userInfo, msgMenu)
+
+        # формирование первого вопроса в теме
+        grade, NextAsk, pureAsk  = menu.getGigaChat().nextQwest(None, userInfo.testedUserMode, skill, True, userInfo)
+        quest = Grade.decodeGrade(grade) + userInfo.testedUserQuestName
+        userInfo.testedUserAnswers += f"mode:q<{quest}>{pureAsk}\n"
+        userInfo.testedCurrentRequsts = 0
+        userInfo.testedAllRequsts = NextAsk
+        # userInfo.testedUserAnswers += f"mode:q<{quest}>{NextAsk}\n"
+        userInfo.save()
+        await msg.answer(pureAsk)
 
     async def doRequest(menu, msg: types.Message, userInfo):
         testedUserWorks = userInfo.testedUserWorks
@@ -390,6 +403,10 @@ class kbs:
                     userInfo.save()
                     await kbs.doRequest(menu, msg, userInfo)
             return
+        if current_menu == "menuSelectUserPure".lower():
+            # await kbs.gotoMenu(msg, menu, 'menuSelectLevel', userInfo)
+            await kbs.doBeginRequest(menu, msg, userInfo, msg.text)
+            return
 
         await msg.answer("Непонятно")
         return
@@ -412,11 +429,29 @@ class kbs:
 
         return False
     # создание меню с списком заявок
-    async def createRequestList(menu, current_menu, msg: types.Message, userInfo, msgNext):
-        # if msgNext.lower()=='menuEditRequests'.lower():
-        #     requsts = okDesk.getListReqwests(userInfo.okDeskUserId)
-        #     return requsts
-        return None
+    async def gotoMenuExt(msg: types.Message, menu, menuName, userInfo, titleExt , skillsGranted):
+        msgNext = menuName
+        # menuReply, title, selMenu = menu.getMenu(msgNext, msg, userInfo)
+
+        # RequestList = ["111",'2222','333','444']
+        RequestList = []
+        for skill in skillsGranted:
+            RequestList.append(skill[0])
+        # if RequestList is not None:
+        #     for request in RequestList:
+        #         kb = KeyboardButton(request)
+        #         menuReply.insert(kb)
+        #         # menuReply.add(kb)
+        #     pass
+        menuReply, title, selMenu = menu.getMenuExt(msgNext, msg, userInfo, RequestList)
+
+        if menuReply is not None:
+            userInfo.current_menu = msgNext
+            userInfo.save()
+            if titleExt is not None:
+                title = titleExt
+            await msg.answer(title, reply_markup=menuReply)
+
     # переход на меню по имени
     async def gotoMenu(msg: types.Message, menu, menuName, userInfo, titleExt = None):
         msgNext = menuName
